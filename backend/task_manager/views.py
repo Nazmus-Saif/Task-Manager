@@ -152,6 +152,14 @@ def edit_user(request, user_id):
         if "password" in update_data:
             update_data["password"] = make_password(update_data["password"])
 
+        # Merge new permissions instead of replacing
+        if "permissions" in update_data:
+            existing_permissions = user.permissions or {}  # Get existing or empty
+            existing_permissions.update(
+                update_data["permissions"])  # Merge updates
+            # Set merged permissions
+            update_data["permissions"] = existing_permissions
+
         serializer = AddUserSerializer(user, data=update_data, partial=True)
         if serializer.is_valid():
             serializer.save()
