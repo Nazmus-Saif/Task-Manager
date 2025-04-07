@@ -28,7 +28,7 @@ class TokenRefresh(TokenRefreshView):
                 httponly=True,
                 secure=True,
                 samesite="None",
-                max_age=3600 * 24,  # 1 day
+                max_age=3600 * 24,
                 path="/",
             )
             return res
@@ -38,17 +38,40 @@ class TokenRefresh(TokenRefreshView):
             return Response({"error": f"Failed to refresh token. Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def check_auth_user(request):
     try:
         access_token = request.COOKIES.get("access_token")
         if access_token:
-            return Response({"success": True, "message": "User is authenticated."}, status=status.HTTP_200_OK)
+            user = request.user
+
+            user_data = {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "role": user.role,
+                "permissions": user.permissions,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at,
+            }
+
+            return Response({
+                "success": True,
+                "message": "User is authenticated.",
+                "user_data": user_data
+            }, status=status.HTTP_200_OK)
         else:
-            return Response({"success": False, "message": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({
+                "success": False,
+                "message": "User is not authenticated."
+            }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        return Response({"error": f"Error checking authentication status: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({
+            "error": f"Error checking authentication status: {str(e)}"
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])
@@ -81,7 +104,7 @@ def sign_in(request):
                 httponly=True,
                 samesite="None",
                 secure=True,
-                max_age=60,
+                max_age=3600 * 24,
                 path="/",
             )
             res.set_cookie(
@@ -175,7 +198,7 @@ def edit_user(request, user_id):
 @permission_classes([IsAuthenticated])
 def create_task(request):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("create_task", False)):
+        if not (request.user.is_superuser or request.user.permissions.get("create", False)):
             return Response({"error": "You don't have permission to create a task."}, status=status.HTTP_403_FORBIDDEN)
 
         assigned_user = Users.objects.filter(
@@ -214,7 +237,7 @@ def get_tasks(request):
 @permission_classes([IsAuthenticated])
 def edit_task(request, task_id):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("edit_task", False)):
+        if not (request.user.is_superuser or request.user.permissions.get("update", False)):
             return Response({"error": "You don't have permission to edit this task."}, status=status.HTTP_403_FORBIDDEN)
 
         task = Tasks.objects.filter(id=task_id).first()
@@ -251,7 +274,7 @@ def edit_task(request, task_id):
 @permission_classes([IsAuthenticated])
 def delete_task(request, task_id):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("delete_task", False)):
+        if not (request.user.is_superuser or request.user.permissions.get("delete", False)):
             return Response({"error": "You don't have permission to delete this task."}, status=status.HTTP_403_FORBIDDEN)
 
         task = Tasks.objects.filter(id=task_id).first()

@@ -1,18 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  MdAssignment,
-  MdCheckCircle,
-  MdPendingActions,
-  MdWork,
-} from "react-icons/md";
+import { MdAssignment, MdCheckCircle, MdPendingActions } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const DeveloperPage = () => {
-  const userRole = "developer";
+  const { authorizedUser } = authenticationController();
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Welcome, Developer</h1>

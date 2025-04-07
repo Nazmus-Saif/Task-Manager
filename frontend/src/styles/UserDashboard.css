@@ -15,7 +15,7 @@
     height: 100dvh;
     background: var(--background-color);
     display: grid;
-    grid-template-columns: 15rem auto;
+    grid-template-columns: 17rem auto;
     width: 100%;
     color: var(--text-dark);
 }

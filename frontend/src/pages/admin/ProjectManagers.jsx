@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const ProjectManagers = () => {
+  const { authorizedUser } = authenticationController();
   const [pms, setPms] = useState([
     {
       id: 1,
@@ -28,7 +30,6 @@ const ProjectManagers = () => {
     name: "",
     email: "",
   });
-  const userRole = "admin";
 
   const handleDelete = (pmId) => {
     setPms((prevPms) => prevPms.filter((pm) => pm.id !== pmId));
@@ -57,7 +58,7 @@ const ProjectManagers = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Project Managers</h1>

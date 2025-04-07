@@ -10,10 +10,13 @@ import {
   MdNotifications,
   MdAssessment,
 } from "react-icons/md";
+import { authenticationController } from "../controllers/authenticationController.js";
 
 const SideBar = ({ role }) => {
+  const { signOut } = authenticationController();
+
   const sidebarData = {
-    admin: [
+    super_admin: [
       {
         to: "/super-admin/dashboard",
         icon: <MdSpaceDashboard />,
@@ -22,7 +25,7 @@ const SideBar = ({ role }) => {
       {
         to: "/super-admin/project-managers",
         icon: <MdSupervisorAccount />,
-        label: "PMs",
+        label: "Project Managers",
       },
       {
         to: "/super-admin/developers",
@@ -35,7 +38,7 @@ const SideBar = ({ role }) => {
         label: "Tasks",
       },
     ],
-    projectManager: [
+    project_manager: [
       {
         to: "/project-manager/dashboard",
         icon: <MdSpaceDashboard />,
@@ -94,7 +97,7 @@ const SideBar = ({ role }) => {
             <h4>{link.label}</h4>
           </NavLink>
         ))}
-        <div className="sidebar-link signout">
+        <div className="sidebar-link signout" onClick={signOut}>
           <MdLogout />
           <h4>Sign Out</h4>
         </div>

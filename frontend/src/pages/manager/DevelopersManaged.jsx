@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const DevelopersManaged = () => {
-  const userRole = "projectManager";
-
+  const { authorizedUser } = authenticationController();
   const userPermissions = { canEdit: true, canDelete: false };
   const showActionsColumn =
     userPermissions.canEdit || userPermissions.canDelete;
@@ -74,7 +74,7 @@ const DevelopersManaged = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Developers Managed</h1>

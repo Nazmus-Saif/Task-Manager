@@ -2,10 +2,6 @@ import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SignInPage from "./pages/SignInPage.jsx";
-import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
-import ForgotPasswordPage from "./pages/ForgotPassword.jsx";
-import ResetPasswordPage from "./pages/ResetPassword.jsx";
-import UserProfilePage from "./pages/UserProfilePage.jsx";
 import SuperAdminPage from "./pages/admin/SuperAdminPage.jsx";
 import ProjectManagers from "./pages/admin/ProjectManagers.jsx";
 import Developers from "./pages/admin/Developers.jsx";
@@ -44,39 +40,148 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/user/verify-email" element={<VerifyEmailPage />} />
-          <Route path="/user/profile" element={<UserProfilePage />} />
-          <Route path="/user/signin" element={<SignInPage />} />
           <Route
-            path="/user/forgot-password"
-            element={<ForgotPasswordPage />}
+            path="/super-admin/dashboard"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "super_admin" ? (
+                <SuperAdminPage />
+              ) : (
+                <Navigate to="/user/signin" />
+              )
+            }
           />
-          <Route
-            path="/reset-password/:token"
-            element={<ResetPasswordPage />}
-          />
-          <Route path="/super-admin/dashboard" element={<SuperAdminPage />} />
           <Route
             path="/super-admin/project-managers"
-            element={<ProjectManagers />}
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "super_admin" ? (
+                <ProjectManagers />
+              ) : (
+                <SignInPage />
+              )
+            }
           />
-          <Route path="/super-admin/developers" element={<Developers />} />
-          <Route path="/super-admin/tasks" element={<Tasks />} />
-          <Route path="/developer/dashboard" element={<DeveloperPage />} />
-          <Route path="/developer/my-tasks" element={<MyTasks />} />
-          <Route path="/developer/notifications" element={<Notifications />} />
+          <Route
+            path="/super-admin/developers"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "super_admin" ? (
+                <Developers />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/super-admin/tasks"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "super_admin" ? (
+                <Tasks />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/user/signin"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "super_admin" ? (
+                <Navigate to="/super-admin/dashboard" />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/developer/dashboard"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "developer" ? (
+                <DeveloperPage />
+              ) : (
+                <Navigate to="/user/signin" />
+              )
+            }
+          />
+          <Route
+            path="/developer/my-tasks"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "developer" ? (
+                <MyTasks />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/developer/notifications"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "developer" ? (
+                <Notifications />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/user/signin"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "developer" ? (
+                <Navigate to="/developer/dashboard" />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
           <Route
             path="/project-manager/dashboard"
-            element={<ProjectManagerPage />}
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "project_manager" ? (
+                <ProjectManagerPage />
+              ) : (
+                <Navigate to="/user/signin" />
+              )
+            }
           />
           <Route
             path="/project-manager/developers"
-            element={<DevelopersManaged />}
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "project_manager" ? (
+                <DevelopersManaged />
+              ) : (
+                <SignInPage />
+              )
+            }
           />
-          <Route path="/project-manager/operations" element={<Operations />} />
           <Route
-            path="*"
-            element={<Navigate to="/project-manager/dashboard" />}
+            path="/project-manager/operations"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "project_manager" ? (
+                <Operations />
+              ) : (
+                <SignInPage />
+              )
+            }
+          />
+          <Route
+            path="/user/signin"
+            element={
+              authorizedUser &&
+              authorizedUser?.user_data.role === "project_manager" ? (
+                <Navigate to="/project-manager/dashboard" />
+              ) : (
+                <SignInPage />
+              )
+            }
           />
         </Routes>
       </BrowserRouter>

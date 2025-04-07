@@ -3,18 +3,19 @@ import { MdAdd, MdSupervisorAccount, MdWork, MdPeople } from "react-icons/md";
 import { Link } from "react-router-dom";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
 import SignUpForm from "../../components/SignUpForm.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const AdminDashboard = () => {
+  const { authorizedUser } = authenticationController();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const userRole = "admin";
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
 
       <main className="main-content">
         <header className="top-nav">
-          <h1>Welcome, Admin</h1>
+          <h1>Welcome {authorizedUser?.user_data.name}</h1>
           <div className="nav-right">
             <button
               className="btn add-user-btn"

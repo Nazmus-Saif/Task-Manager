@@ -11,10 +11,12 @@ import {
   ArcElement,
   CategoryScale,
 } from "chart.js";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 const ProjectManagerDashboard = () => {
+  const { authorizedUser } = authenticationController();
   const data = {
     labels: ["Complete", "Pending", "In Progress"],
     datasets: [
@@ -41,11 +43,10 @@ const ProjectManagerDashboard = () => {
       },
     },
   };
-  const userRole = "projectManager";
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Welcome, Project Manager</h1>

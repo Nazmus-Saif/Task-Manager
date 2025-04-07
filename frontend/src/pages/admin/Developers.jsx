@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const Developers = () => {
+  const { authorizedUser } = authenticationController();
   const [developers, setDevelopers] = useState([
     {
       id: 1,
@@ -22,8 +24,6 @@ const Developers = () => {
     name: "",
     email: "",
   });
-
-  const userRole = "admin";
 
   const handleEdit = (developer) => {
     setEditingDeveloper(developer);
@@ -54,7 +54,7 @@ const Developers = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
 
       <main className="main-content">
         <header className="top-nav">

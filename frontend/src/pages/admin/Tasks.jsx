@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const Tasks = () => {
+  const { authorizedUser } = authenticationController();
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -28,8 +30,6 @@ const Tasks = () => {
     priority: "",
     dueDate: "",
   });
-
-  const userRole = "admin";
 
   const handleEdit = (task) => {
     setEditingTask(task);
@@ -60,7 +60,7 @@ const Tasks = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
 
       <main className="main-content">
         <header className="top-nav">

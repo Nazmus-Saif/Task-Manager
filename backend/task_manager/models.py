@@ -38,32 +38,14 @@ class Users(AbstractBaseUser):
 
 
 class Tasks(models.Model):
-    LOW = 1
-    MEDIUM = 2
-    HIGH = 3
-    PRIORITY_CHOICES = [
-        (LOW, "Low"),
-        (MEDIUM, "Medium"),
-        (HIGH, "High"),
-    ]
-
-    PENDING = 1
-    IN_PROGRESS = 2
-    COMPLETED = 3
-    STATUS_CHOICES = [
-        (PENDING, "Pending"),
-        (IN_PROGRESS, "In Progress"),
-        (COMPLETED, "Completed"),
-    ]
-
     title = models.CharField(max_length=200)
     description = models.TextField()
     assigned_to = models.ForeignKey(
         Users, on_delete=models.CASCADE, related_name="assigned_tasks")
     assigned_by = models.ForeignKey(
         Users, on_delete=models.CASCADE, related_name="created_tasks")
-    priority = models.IntegerField(choices=PRIORITY_CHOICES, default=MEDIUM)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    priority = models.CharField(max_length=50, default="medium")
+    status = models.CharField(max_length=50, default="pending")
     deadline = models.DateField(default=datetime.date.today)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

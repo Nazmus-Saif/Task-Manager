@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const Notifications = () => {
+  const { authorizedUser } = authenticationController();
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -26,11 +28,10 @@ const Notifications = () => {
       },
     ]);
   }, []);
-  const userRole = "developer";
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Notifications</h1>

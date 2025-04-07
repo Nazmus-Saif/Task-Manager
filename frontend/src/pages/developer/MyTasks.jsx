@@ -7,8 +7,10 @@ import {
   MdDelete,
 } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
+import { authenticationController } from "../../controllers/authenticationController.js";
 
 const MyTasks = () => {
+  const { authorizedUser } = authenticationController();
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -76,7 +78,7 @@ const MyTasks = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role="developer" />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>My Tasks</h1>

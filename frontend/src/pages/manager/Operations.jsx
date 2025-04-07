@@ -5,6 +5,7 @@ import SideBarLayout from "../../components/SideBarLayout.jsx";
 import { authenticationController } from "../../controllers/authenticationController.js";
 
 const Management = () => {
+  const { authorizedUser } = authenticationController();
   const [isAssignTaskOpen, setIsAssignTaskOpen] = useState(false);
   const { addTask, isTaskAdded } = authenticationController();
 
@@ -19,7 +20,6 @@ const Management = () => {
   const handleCloseAssignTaskForm = () => setIsAssignTaskOpen(false);
 
   const userPermissions = { canCreateTask: true };
-  const userRole = "projectManager";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ const Management = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={userRole} />
+      <SideBarLayout role={authorizedUser?.user_data.role} />
       <main className="main-content">
         <header className="top-nav">
           <h1>Operations</h1>

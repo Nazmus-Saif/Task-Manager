@@ -15,7 +15,7 @@ export const authenticationController = create((set, get) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/user/check-auth-user");
+      const res = await axiosInstance.get("/check-auth-user/");
       set({ authorizedUser: res.data });
     } catch (error) {
       set({ authorizedUser: null });
