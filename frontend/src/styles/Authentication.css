@@ -1,0 +1,220 @@
+/* Page Styles */
+.signin-page,
+.verify-email-page,
+.forgot-password-page {
+  width: 100%;
+  min-height: 100dvh;
+  height: 100%;
+  background-color: #181a1e;
+  padding: 0.9375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Styles */
+.signin-card,
+.verification-card,
+.forgot-password-card {
+  max-width: 500px;
+  width: 100%;
+  background-color: #202528;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Card Heading */
+.card-heading {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card-heading h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+/* Form Content */
+.form-content h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.form-content h3 {
+  color: #bbb;
+  font-size: 1rem;
+  font-weight: 500;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+/* Form Input Wrapper */
+.form-input-wrapper {
+  position: relative;
+  height: 50px;
+  margin-bottom: 1rem;
+}
+
+/* Form Input Fields */
+.form-input-field,
+.forgot-password-form-input-field {
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+  color: #e0e0e0;
+  transition: 0.4s;
+  padding: 10px 10px 10px 12px;
+  border-radius: 10px;
+  background-color: #2D3437;
+}
+
+.form-input-field::placeholder,
+.forgot-password-form-input-field::placeholder {
+  color: #bbb;
+  font-weight: 500;
+}
+
+/* Password Toggle Icon */
+.password-toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  font-size: 1.2rem;
+  transform: translateY(-40%);
+  cursor: pointer;
+  color: #bbb;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkbox-container label {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+
+/* Forgot Password */
+.forgot-password {
+  text-align: center;
+  color: #05aecb;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Forgot Password Page Heading */
+.verification-heading,
+.forgot-password-heading {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #e0e0e0;
+}
+
+/* Forgot Password Text */
+.verification-text,
+.forgot-password-text {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  color: #bbb;
+  margin-bottom: 1.5rem;
+}
+
+/* Forgot Password Form */
+.otp-form,
+.forgot-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Forgot Password Form Input Wrapper */
+.forgot-password-form-input-wrapper {
+  position: relative;
+  height: 50px;
+}
+
+/* Back to Sign In */
+.back-to-signin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #05aecb;
+  font-weight: 500;
+}
+
+/* Form Button */
+.form-button,
+.verify-button {
+  display: block;
+  width: 100%;
+  height: 50px;
+  background-color: #be4f00;
+  color: #e0e0e0;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: 0.2s ease-in;
+}
+
+.form-button {
+  margin: 15px auto 0;
+}
+
+.form-button:hover,
+.verify-button:hover {
+  background-color: #d66c01;
+}
+
+.otp-input-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.otp-input {
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: #2D3437;
+  color: #e0e0e0;
+  border-radius: 10px;
+}
+
+.otp-input:focus {
+  border-color: #05aecb;
+}
+
+.resend-otp-text {
+  text-align: center;
+  text-decoration: none;
+  color: #bbbbbb;
+  font-size: 0.85rem;
+}
+
+.resend-otp-link {
+  color: #05aecb;
+  margin-left: 5px;
+  font-weight: 500;
+  cursor: pointer;
+}
