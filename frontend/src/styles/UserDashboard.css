@@ -192,6 +192,10 @@
     gap: 1.6rem;
 }
 
+.notifications {
+    text-align: center;
+}
+
 .notification-list {
     display: flex;
     flex-direction: column;
@@ -253,6 +257,19 @@
     font-size: 2.5rem;
 }
 
+/* Chat section */
+.chart-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.chart-container {
+    height: 250px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
 /* Task Overview Section */
 .task-section {
     margin-top: 2rem;
@@ -286,6 +303,7 @@ th {
 td {
     color: var(--text-light);
 }
+
 
 /* Action Buttons */
 .action-buttons {
@@ -351,38 +369,11 @@ td {
     color: #bbbbbb;
 }
 
-.add-user-btn {
+.add-user-btn,
+.create-task-btn {
     margin-top: 2px;
     border-radius: 5px;
     background: var(--highlight-color);
-}
-
-.operation-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 1rem;
-    color: #E0E0E0;
-    height: 80dvh;
-    gap: 1rem;
-}
-
-.operation-section button {
-    background-color: var(--highlight-color);
-    font-size: large;
-}
-
-.chart-section {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.chart-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-    margin-top: 20px;
 }
 
 .pm-section {

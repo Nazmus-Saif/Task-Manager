@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { authenticationController } from "../controllers/authenticationController.js";
+import { authController } from "../controllers/authController.js";
 
 const SignInPage = () => {
-  const { signIn, isSigningIn } = authenticationController();
+  const { signIn, isSigningIn } = authController();
   const [signInFormData, setSignInFormData] = useState({
     email: "",
     password: "",

@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { authenticationController } from "../controllers/authenticationController";
+import { authController } from "../controllers/authController";
 
 const VerifyEmailPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef(Array(6).fill(null));
   const navigate = useNavigate();
-  const { verifyEmail, isVerifyingEmail } = authenticationController();
+  const { verifyEmail, isVerifyingEmail } = authController();
 
   const [timer, setTimer] = useState(60);
   const [isResendActive, setIsResendActive] = useState(false);

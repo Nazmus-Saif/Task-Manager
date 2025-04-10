@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { authenticationController } from "../controllers/authenticationController.js";
+import { authController } from "../controllers/authController.js";
 
 const SignUpForm = ({ closeForm }) => {
   const [isSignUpPasswordVisible, setIsSignUpPasswordVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [permissions, setPermissions] = useState({
-    create: false,
-    read: false,
-    update: false,
-    delete: false,
+    create_user: false,
+    get_users: false,
+    update_user: false,
+    delete_user: false,
+    create_task: false,
+    get_tasks: false,
+    update_task: false,
+    delete_task: false,
   });
 
   const [signUpFormData, setSignUpFormData] = useState({
@@ -20,7 +24,7 @@ const SignUpForm = ({ closeForm }) => {
     role: "",
   });
 
-  const { signUp, isSigningUp } = authenticationController();
+  const { signUp, isSigningUp } = authController();
 
   const toggleSignUpPasswordVisibility = () =>
     setIsSignUpPasswordVisible(!isSignUpPasswordVisible);
@@ -61,25 +65,25 @@ const SignUpForm = ({ closeForm }) => {
   const handleSignUpSubmission = async (e) => {
     e.preventDefault();
     const finalData = { ...signUpFormData, permissions };
-    try {
-      await signUp(finalData);
-      setSignUpFormData({
-        name: "",
-        email: "",
-        password: "",
-        role: "",
-      });
-      setPermissions({
-        create: false,
-        read: false,
-        update: false,
-        delete: false,
-      });
-      closeForm();
-      setStep(1);
-    } catch (error) {
-      console.error("Signup failed:", error);
-    }
+    await signUp(finalData);
+    setSignUpFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: "",
+    });
+    setPermissions({
+      create_user: false,
+      get_users: false,
+      update_user: false,
+      delete_user: false,
+      create_task: false,
+      get_tasks: false,
+      update_task: false,
+      delete_task: false,
+    });
+    closeForm();
+    setStep(1);
   };
 
   return (
@@ -161,38 +165,74 @@ const SignUpForm = ({ closeForm }) => {
                 <label>
                   <input
                     type="checkbox"
-                    name="create"
-                    checked={permissions.create}
+                    name="create_user"
+                    checked={permissions.create_user}
                     onChange={handlePermissionChange}
                   />
-                  Create
+                  Create User
                 </label>
                 <label>
                   <input
                     type="checkbox"
-                    name="read"
-                    checked={permissions.read}
+                    name="get_users"
+                    checked={permissions.get_users}
                     onChange={handlePermissionChange}
                   />
-                  Read
+                  Get Users
                 </label>
                 <label>
                   <input
                     type="checkbox"
-                    name="update"
-                    checked={permissions.update}
+                    name="update_user"
+                    checked={permissions.update_user}
                     onChange={handlePermissionChange}
                   />
-                  update
+                  Update User
                 </label>
                 <label>
                   <input
                     type="checkbox"
-                    name="delete"
-                    checked={permissions.delete}
+                    name="delete_user"
+                    checked={permissions.delete_user}
                     onChange={handlePermissionChange}
                   />
-                  Delete
+                  Delete User
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="create_task"
+                    checked={permissions.create_task}
+                    onChange={handlePermissionChange}
+                  />
+                  Create Task
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="get_tasks"
+                    checked={permissions.get_tasks}
+                    onChange={handlePermissionChange}
+                  />
+                  Get Tasks
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="update_task"
+                    checked={permissions.update_task}
+                    onChange={handlePermissionChange}
+                  />
+                  Update Task
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="delete_task"
+                    checked={permissions.delete_task}
+                    onChange={handlePermissionChange}
+                  />
+                  Delete Task
                 </label>
               </div>
             </div>

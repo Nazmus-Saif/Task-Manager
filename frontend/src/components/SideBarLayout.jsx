@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   MdSpaceDashboard,
-  MdSupervisorAccount,
   MdPeopleAlt,
   MdWork,
   MdLogout,
-  MdManageAccounts,
   MdNotifications,
   MdAssessment,
 } from "react-icons/md";
-import { authenticationController } from "../controllers/authenticationController.js";
+import { authController } from "../controllers/authController.js";
 
-const SideBar = ({ role }) => {
-  const { signOut } = authenticationController();
+const SideBar = () => {
+  const { authorizedUser, signOut } = authController();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    if (authorizedUser) {
+      setRole(authorizedUser.data.role);
+    }
+  }, [authorizedUser]);
 
   const sidebarData = {
     super_admin: [
@@ -23,14 +28,9 @@ const SideBar = ({ role }) => {
         label: "Dashboard",
       },
       {
-        to: "/super-admin/project-managers",
-        icon: <MdSupervisorAccount />,
-        label: "Project Managers",
-      },
-      {
-        to: "/super-admin/developers",
+        to: "/super-admin/users",
         icon: <MdPeopleAlt />,
-        label: "Developers",
+        label: "Users",
       },
       {
         to: "/super-admin/tasks",
@@ -38,43 +38,27 @@ const SideBar = ({ role }) => {
         label: "Tasks",
       },
     ],
-    project_manager: [
+    user: [
       {
-        to: "/project-manager/dashboard",
+        to: "/user/dashboard",
         icon: <MdSpaceDashboard />,
         label: "Dashboard",
       },
       {
-        to: "/project-manager/developers",
-        icon: <MdPeopleAlt />,
-        label: "Developers",
-      },
-      {
-        to: "/project-manager/operations",
-        icon: <MdManageAccounts />,
-        label: "Operations",
-      },
-    ],
-    developer: [
-      {
-        to: "/developer/dashboard",
-        icon: <MdSpaceDashboard />,
-        label: "Dashboard",
-      },
-      {
-        to: "/developer/my-tasks",
+        to: "/user/my-tasks",
         icon: <MdAssessment />,
         label: "My Tasks",
       },
       {
-        to: "/developer/notifications",
+        to: "/user/notifications",
         icon: <MdNotifications />,
         label: "Notifications",
       },
     ],
   };
 
-  const links = sidebarData[role] || [];
+  const links =
+    role === "super_admin" ? sidebarData.super_admin : sidebarData.user;
 
   return (
     <aside className="sidebar">

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { FiUser, FiMail, FiCamera } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { authenticationController } from "../controllers/authenticationController.js";
+import { authController } from "../controllers/authController.js";
 
 const ProfilePage = () => {
   const { authorizedUser, isUpdatingProfile, updateProfile } =
-    authenticationController();
+    authController();
 
   const [selectedImage, setSelectedImage] = useState(null);
 

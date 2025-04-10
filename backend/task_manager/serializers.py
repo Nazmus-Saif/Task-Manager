@@ -1,4 +1,4 @@
-from .models import Users, Tasks
+from .models import Users, Tasks, Notifications
 from rest_framework import serializers
 
 
@@ -20,7 +20,7 @@ class SignInSerializer(serializers.Serializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if isinstance(instance, Users):
-            user_data = {
+            data = {
                 "id": instance.id,
                 "email": instance.email,
                 "name": instance.name,
@@ -31,11 +31,35 @@ class SignInSerializer(serializers.Serializer):
                 "created_at": instance.created_at,
                 "updated_at": instance.updated_at,
             }
-            representation.update(user_data)
+            representation.update(data)
         return representation
 
 
+class UserNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['id', 'name']
+
+
 class CreateTaskSerializer(serializers.ModelSerializer):
+    assigned_to_name = serializers.SerializerMethodField()
+    assigned_by_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Tasks
+        fields = "__all__"
+
+    def get_assigned_to_name(self, obj):
+        return obj.assigned_to.name if obj.assigned_to else None
+
+    def get_assigned_by_name(self, obj):
+        return obj.assigned_by.name if obj.assigned_by else None
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(
+        source='created_by.name', read_only=True)
+
+    class Meta:
+        model = Notifications
         fields = "__all__"

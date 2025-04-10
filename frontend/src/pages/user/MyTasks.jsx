@@ -4,7 +4,7 @@ import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
 import { authController } from "../../controllers/authController.js";
 
-const Tasks = () => {
+const MyTasks = () => {
   const {
     authorizedUser,
     getTasks,
@@ -20,7 +20,6 @@ const Tasks = () => {
     status: "",
     priority: "",
     dueDate: "",
-    assignedTo: "",
     assignedBy: "",
   });
 
@@ -35,7 +34,6 @@ const Tasks = () => {
       status: task.status,
       priority: task.priority,
       dueDate: task.deadline,
-      assignedTo: task.assigned_to,
       assignedBy: task.assigned_by,
     });
   };
@@ -56,7 +54,6 @@ const Tasks = () => {
       status: formData.status,
       priority: formData.priority,
       deadline: formData.dueDate,
-      assigned_to: formData.assignedTo,
       assigned_by: formData.assignedBy,
     };
 
@@ -65,7 +62,6 @@ const Tasks = () => {
       status: updatedTask.status,
       priority: updatedTask.priority,
       deadline: updatedTask.deadline,
-      assigned_to: updatedTask.assigned_to,
       assigned_by: updatedTask.assigned_by,
     };
 
@@ -102,11 +98,11 @@ const Tasks = () => {
       <SideBarLayout role={authorizedUser?.data.role} />
       <main className="main-content">
         <header className="top-nav">
-          <h1>Tasks</h1>
+          <h1>My Tasks</h1>
           <div className="input-wrapper">
             <input
               type="text"
-              placeholder="Search here..."
+              placeholder="Search tasks..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -142,9 +138,9 @@ const Tasks = () => {
                       setFormData({ ...formData, status: e.target.value })
                     }
                   >
-                    <option value="1">Pending</option>
-                    <option value="2">In-Progress</option>
-                    <option value="3">Completed</option>
+                    <option>pending</option>
+                    <option>in-progress</option>
+                    <option>completed</option>
                   </select>
                 </div>
                 <div className="input-group">
@@ -155,9 +151,9 @@ const Tasks = () => {
                       setFormData({ ...formData, priority: e.target.value })
                     }
                   >
-                    <option value="1">High</option>
-                    <option value="2">Medium</option>
-                    <option value="3">Low</option>
+                    <option>high</option>
+                    <option>medium</option>
+                    <option>low</option>
                   </select>
                 </div>
                 <div className="input-group">
@@ -171,24 +167,8 @@ const Tasks = () => {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Assigned To:</label>
-                  <input
-                    type="text"
-                    value={formData.assignedTo}
-                    onChange={(e) =>
-                      setFormData({ ...formData, assignedTo: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="input-group">
                   <label>Assigned By:</label>
-                  <input
-                    type="text"
-                    value={formData.assignedBy}
-                    onChange={(e) =>
-                      setFormData({ ...formData, assignedBy: e.target.value })
-                    }
-                  />
+                  <input type="text" value={formData.assignedBy} readOnly />
                 </div>
                 <div className="form-actions">
                   <button type="submit" className="save-btn">
@@ -212,7 +192,6 @@ const Tasks = () => {
                   <th>Status</th>
                   <th>Priority</th>
                   <th>Due Date</th>
-                  <th>Assigned To</th>
                   <th>Assigned By</th>
                   <th>Action</th>
                 </tr>
@@ -222,7 +201,7 @@ const Tasks = () => {
                   task.title.toLowerCase().includes(searchTerm.toLowerCase())
                 ).length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-tasks-message">
+                    <td colSpan="6" className="no-tasks-message">
                       No tasks found
                     </td>
                   </tr>
@@ -246,7 +225,6 @@ const Tasks = () => {
                         </td>
                         <td>{task.priority}</td>
                         <td>{task.deadline}</td>
-                        <td>{task.assigned_to_name}</td>
                         <td>{task.assigned_by_name}</td>
                         <td className="action-buttons">
                           <button
@@ -274,4 +252,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default MyTasks;

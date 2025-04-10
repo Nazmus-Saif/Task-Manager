@@ -3,12 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaArrowLeft, FaSpinner } from "react-icons/fa";
-import { authenticationController } from "../controllers/authenticationController";
+import { authController } from "../controllers/authController";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { resetPassword, isPasswordReset } = authenticationController();
+  const { resetPassword, isPasswordReset } = authController();
 
   const { token } = useParams();
   const navigate = useNavigate();

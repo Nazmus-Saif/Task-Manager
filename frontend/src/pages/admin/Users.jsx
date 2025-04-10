@@ -1,67 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Loader } from "lucide-react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
-import { authenticationController } from "../../controllers/authenticationController.js";
+import { authController } from "../../controllers/authController.js";
 
-const ProjectManagers = () => {
-  const { authorizedUser } = authenticationController();
-  const [pms, setPms] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "johndoe@example.com",
-      status: "Active",
-      lastActive: "2025-03-22 12:30",
-      teamLead: ["Team X"],
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "janesmith@example.com",
-      status: "Inactive",
-      lastActive: "2025-03-20 10:00",
-      teamLead: ["Team A"],
-    },
-  ]);
+const Users = () => {
+  const {
+    authorizedUser,
+    getUsers,
+    users,
+    isUserFetching,
+    updateUser,
+    deleteUser,
+    isUserUpdating,
+    isUserDeleting,
+  } = authController();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [editingPm, setEditingPm] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    role: "",
   });
 
-  const handleDelete = (pmId) => {
-    setPms((prevPms) => prevPms.filter((pm) => pm.id !== pmId));
-  };
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
-  const handleEdit = (pm) => {
-    setEditingPm(pm);
+  const handleEdit = (user) => {
+    setEditingUser(user);
     setFormData({
-      name: pm.name,
-      email: pm.email,
+      name: user.name,
+      email: user.email,
+      role: user.role,
     });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleDelete = async (userId) => {
+    await deleteUser(userId);
+    authController.setState((state) => ({
+      users: state.users.filter((user) => user.id !== userId),
+    }));
+  };
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const updatedPm = { ...editingPm, ...formData };
-    setPms((prevPms) =>
-      prevPms.map((pm) => (pm.id === updatedPm.id ? updatedPm : pm))
-    );
-    setEditingPm(null); // Close the edit form
+    const updatedUser = {
+      name: formData.name,
+      email: formData.email,
+      role: formData.role,
+    };
+
+    await updateUser(editingUser.id, updatedUser);
+    getUsers();
+    setEditingUser(null);
   };
 
   const handleCancel = () => {
-    setEditingPm(null); // Close the edit form
+    setEditingUser(null);
   };
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.user_data.role} />
+      <SideBarLayout role={authorizedUser?.data.role} />
+
       <main className="main-content">
         <header className="top-nav">
-          <h1>Project Managers</h1>
+          <h1>Users</h1>
           <div className="input-wrapper">
             <input
               type="text"
@@ -73,10 +79,15 @@ const ProjectManagers = () => {
             <MdSearch />
           </div>
         </header>
-        <section className="project-manager-section">
-          {editingPm ? (
+
+        <section className="developer-section">
+          {isUserFetching ? (
+            <div className="user-loading-state">
+              <Loader className="user-loading-spinner" />
+            </div>
+          ) : editingUser ? (
             <div className="edit-form-container">
-              <h2>Edit Project Manager</h2>
+              <h2>Edit User</h2>
               <form onSubmit={handleFormSubmit} className="edit-form">
                 <div className="input-group">
                   <label>Name:</label>
@@ -98,9 +109,23 @@ const ProjectManagers = () => {
                     }
                   />
                 </div>
+                <div className="input-group">
+                  <label>Role:</label>
+                  <input
+                    type="text"
+                    value={formData.role}
+                    onChange={(e) =>
+                      setFormData({ ...formData, role: e.target.value })
+                    }
+                  />
+                </div>
                 <div className="form-actions">
-                  <button type="submit" className="save-btn">
-                    Save Changes
+                  <button
+                    type="submit"
+                    className="save-btn"
+                    disabled={isUserUpdating}
+                  >
+                    {isUserUpdating ? "Saving..." : "Save Changes"}
                   </button>
                   <button
                     type="button"
@@ -118,30 +143,39 @@ const ProjectManagers = () => {
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
+                  <th>Role</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {pms
-                  .filter((pm) =>
-                    pm.name.toLowerCase().includes(searchTerm.toLowerCase())
+                {users
+                  .filter((user) =>
+                    user.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
-                  .map((pm) => (
-                    <tr key={pm.id}>
-                      <td>{pm.name}</td>
-                      <td>{pm.email}</td>
+                  .map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>{user.role}</td>
                       <td className="action-buttons">
                         <button
                           className="btn edit-btn"
-                          onClick={() => handleEdit(pm)}
+                          onClick={() => handleEdit(user)}
                         >
                           <MdEdit /> Edit
                         </button>
                         <button
                           className="btn delete-btn"
-                          onClick={() => handleDelete(pm.id)}
+                          onClick={() => handleDelete(user.id)}
+                          disabled={isUserDeleting}
                         >
-                          <MdDelete /> Delete
+                          {isUserDeleting ? (
+                            "Deleting..."
+                          ) : (
+                            <>
+                              <MdDelete /> Delete
+                            </>
+                          )}
                         </button>
                       </td>
                     </tr>
@@ -155,4 +189,4 @@ const ProjectManagers = () => {
   );
 };
 
-export default ProjectManagers;
+export default Users;

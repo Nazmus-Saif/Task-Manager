@@ -1,26 +1,64 @@
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { authController } from "./controllers/authController.js";
 import SignInPage from "./pages/SignInPage.jsx";
-import SuperAdminPage from "./pages/admin/SuperAdminPage.jsx";
-import ProjectManagers from "./pages/admin/ProjectManagers.jsx";
-import Developers from "./pages/admin/Developers.jsx";
+import SuperAdminPage from "./pages/admin/SuperAdmin.jsx";
+import Users from "./pages/admin/Users.jsx";
 import Tasks from "./pages/admin/Tasks.jsx";
-import DeveloperPage from "./pages/developer/DeveloperPage.jsx";
-import MyTasks from "./pages/developer/MyTasks.jsx";
-import Notifications from "./pages/developer/Notifications.jsx";
-import ProjectManagerPage from "./pages/manager/ProjectManagerPage.jsx";
-import DevelopersManaged from "./pages/manager/DevelopersManaged.jsx";
-import Operations from "./pages/manager/Operations.jsx";
-import { authenticationController } from "./controllers/authenticationController.js";
+import User from "./pages/user/User.jsx";
+import MyTasks from "./pages/user/MyTasks.jsx";
+import Notifications from "./pages/user/Notifications.jsx";
 import "./styles/GlobalVariables.css";
 import "./styles/Authentication.css";
 import "./styles/UserDashboard.css";
 import "./styles/UserProfilePage.css";
 
+const PrivateRoute = ({ element, allowedRole }) => {
+  const { authorizedUser } = authController();
+
+  if (!authorizedUser) return <Navigate to="/user/signin" />;
+
+  if (authorizedUser?.data.role === "super_admin" && allowedRole === "user") {
+    return <Navigate to="/super-admin/dashboard" />;
+  }
+  if (
+    authorizedUser?.data.role !== "super_admin" &&
+    allowedRole === "super_admin"
+  ) {
+    return <Navigate to="/user/dashboard" />;
+  }
+  return element;
+};
+
+const AuthRedirect = () => {
+  const { authorizedUser } = authController();
+  const location = useLocation();
+
+  if (authorizedUser) {
+    const redirectPath =
+      authorizedUser?.data.role === "super_admin"
+        ? "/super-admin/dashboard"
+        : "/user/dashboard";
+
+    // Prevent infinite loop if already on the correct dashboard
+    if (location.pathname !== redirectPath) {
+      return <Navigate to={redirectPath} />;
+    }
+  }
+
+  return <SignInPage />;
+};
+
 function App() {
   const { authorizedUser, checkAuth, isCheckingAuthentication } =
-    authenticationController();
+    authController();
 
   useEffect(() => {
     checkAuth();
@@ -40,147 +78,54 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
+          <Route path="/user/signin" element={<AuthRedirect />} />
           <Route
             path="/super-admin/dashboard"
             element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "super_admin" ? (
-                <SuperAdminPage />
-              ) : (
-                <Navigate to="/user/signin" />
-              )
+              <PrivateRoute
+                element={<SuperAdminPage />}
+                allowedRole="super_admin"
+              />
             }
           />
           <Route
-            path="/super-admin/project-managers"
+            path="/super-admin/users"
             element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "super_admin" ? (
-                <ProjectManagers />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/super-admin/developers"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "super_admin" ? (
-                <Developers />
-              ) : (
-                <SignInPage />
-              )
+              <PrivateRoute element={<Users />} allowedRole="super_admin" />
             }
           />
           <Route
             path="/super-admin/tasks"
             element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "super_admin" ? (
-                <Tasks />
-              ) : (
-                <SignInPage />
-              )
+              <PrivateRoute element={<Tasks />} allowedRole="super_admin" />
             }
           />
           <Route
-            path="/user/signin"
+            path="/user/dashboard"
+            element={<PrivateRoute element={<User />} allowedRole="user" />}
+          />
+          <Route
+            path="/user/my-tasks"
+            element={<PrivateRoute element={<MyTasks />} allowedRole="user" />}
+          />
+          <Route
+            path="/user/notifications"
             element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "super_admin" ? (
-                <Navigate to="/super-admin/dashboard" />
-              ) : (
-                <SignInPage />
-              )
+              <PrivateRoute element={<Notifications />} allowedRole="user" />
             }
           />
           <Route
-            path="/developer/dashboard"
+            path="*"
             element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "developer" ? (
-                <DeveloperPage />
-              ) : (
-                <Navigate to="/user/signin" />
-              )
-            }
-          />
-          <Route
-            path="/developer/my-tasks"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "developer" ? (
-                <MyTasks />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/developer/notifications"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "developer" ? (
-                <Notifications />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/user/signin"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "developer" ? (
-                <Navigate to="/developer/dashboard" />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/project-manager/dashboard"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "project_manager" ? (
-                <ProjectManagerPage />
-              ) : (
-                <Navigate to="/user/signin" />
-              )
-            }
-          />
-          <Route
-            path="/project-manager/developers"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "project_manager" ? (
-                <DevelopersManaged />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/project-manager/operations"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "project_manager" ? (
-                <Operations />
-              ) : (
-                <SignInPage />
-              )
-            }
-          />
-          <Route
-            path="/user/signin"
-            element={
-              authorizedUser &&
-              authorizedUser?.user_data.role === "project_manager" ? (
-                <Navigate to="/project-manager/dashboard" />
-              ) : (
-                <SignInPage />
-              )
+              <Navigate
+                to={
+                  !authorizedUser
+                    ? "/user/signin"
+                    : authorizedUser?.data.role === "super_admin"
+                    ? "/super-admin/dashboard"
+                    : "/user/dashboard"
+                }
+              />
             }
           />
         </Routes>

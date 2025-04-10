@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft, FaSpinner } from "react-icons/fa";
-import { authenticationController } from "../controllers/authenticationController";
+import { authController } from "../controllers/authController";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
 
   const { isSendingForgotPasswordEmail, forgotPassword } =
-    authenticationController();
+    authController();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

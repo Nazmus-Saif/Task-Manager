@@ -32,6 +32,21 @@ textarea {
     color: black;
 }
 
+.user-loading-state,
+.task-loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.user-loading-spinner,
+.task-loading-spinner {
+    color: #e0e0e0;
+    font-size: 3rem;
+    animation: spin 1s linear infinite;
+}
+
 .loading-icon {
     margin-top: 5px;
     animation: spin 1s linear infinite;
