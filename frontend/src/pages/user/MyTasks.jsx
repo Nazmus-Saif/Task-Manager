@@ -151,9 +151,9 @@ const MyTasks = () => {
                       setFormData({ ...formData, priority: e.target.value })
                     }
                   >
-                    <option>high</option>
-                    <option>medium</option>
                     <option>low</option>
+                    <option>medium</option>
+                    <option>high</option>
                   </select>
                 </div>
                 <div className="input-group">

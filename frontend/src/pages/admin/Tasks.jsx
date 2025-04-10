@@ -142,9 +142,9 @@ const Tasks = () => {
                       setFormData({ ...formData, status: e.target.value })
                     }
                   >
-                    <option value="1">Pending</option>
-                    <option value="2">In-Progress</option>
-                    <option value="3">Completed</option>
+                    <option>pending</option>
+                    <option>in-progress</option>
+                    <option>completed</option>
                   </select>
                 </div>
                 <div className="input-group">
@@ -155,9 +155,9 @@ const Tasks = () => {
                       setFormData({ ...formData, priority: e.target.value })
                     }
                   >
-                    <option value="1">High</option>
-                    <option value="2">Medium</option>
-                    <option value="3">Low</option>
+                    <option>low</option>
+                    <option>medium</option>
+                    <option>high</option>
                   </select>
                 </div>
                 <div className="input-group">
