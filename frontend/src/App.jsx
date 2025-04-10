@@ -8,13 +8,16 @@ import {
   useLocation,
 } from "react-router-dom";
 import { authController } from "./controllers/authController.js";
-import SignInPage from "./pages/SignInPage.jsx";
-import SuperAdminPage from "./pages/admin/SuperAdmin.jsx";
+import SignInPage from "./pages/SignIn.jsx";
+import SuperAdmin from "./pages/admin/SuperAdmin.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Tasks from "./pages/admin/Tasks.jsx";
 import User from "./pages/user/User.jsx";
 import MyTasks from "./pages/user/MyTasks.jsx";
 import Notifications from "./pages/user/Notifications.jsx";
+import Profile from "./pages/Profile.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import "./styles/GlobalVariables.css";
 import "./styles/Authentication.css";
 import "./styles/UserDashboard.css";
@@ -79,11 +82,19 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/user/signin" element={<AuthRedirect />} />
+          <Route path="/user/forgot-password" element={<ForgotPassword />} />
+          <Route path="/user/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/user/profile"
+            element={
+              authorizedUser ? <Profile /> : <Navigate to="/user/signin" />
+            }
+          />
           <Route
             path="/super-admin/dashboard"
             element={
               <PrivateRoute
-                element={<SuperAdminPage />}
+                element={<SuperAdmin />}
                 allowedRole="super_admin"
               />
             }

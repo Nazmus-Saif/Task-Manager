@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { FiUser, FiMail, FiCamera } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
+import SideBarLayout from "../components/SideBarLayout.jsx";
 import { authController } from "../controllers/authController.js";
 
 const ProfilePage = () => {
-  const { authorizedUser, isUpdatingProfile, updateProfile } =
-    authController();
+  const { authorizedUser, isUpdatingProfile, updateProfile } = authController();
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -29,8 +29,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <main className="profile-page">
-      <div className="profile-page-container">
+    <section className="dashboard-container">
+      <SideBarLayout role={authorizedUser?.data.role} />
+      <main className="profile-page-container">
         <div className="profile-container">
           <div className="profile-header">
             <h1 className="profile-title">Profile</h1>
@@ -39,11 +40,14 @@ const ProfilePage = () => {
               <img
                 src={
                   selectedImage ||
-                  authorizedUser?.profilePic ||
-                  "../images/avatar.png"
+                  authorizedUser?.data.profilePic ||
+                  (authorizedUser?.data.role === "super_admin"
+                    ? "../images/Nazmus Saif.jpg"
+                    : "../images/avatar.png")
                 }
                 alt="Profile"
               />
+
               <label htmlFor="avatar-upload">
                 {isUpdatingProfile ? (
                   <FaSpinner className="loading-icon" />
@@ -74,7 +78,7 @@ const ProfilePage = () => {
               </label>
               <input
                 type="text"
-                value={authorizedUser?.fullName || "N/A"}
+                value={authorizedUser?.data.name || "N/A"}
                 readOnly
               />
             </div>
@@ -84,7 +88,7 @@ const ProfilePage = () => {
               </label>
               <input
                 type="email"
-                value={authorizedUser?.email || "N/A"}
+                value={authorizedUser?.data.email || "N/A"}
                 readOnly
               />
             </div>
@@ -94,8 +98,8 @@ const ProfilePage = () => {
             <div className="information-row">
               <span>Member Since</span>
               <span>
-                {authorizedUser?.createdAt
-                  ? new Date(authorizedUser.createdAt).toLocaleDateString(
+                {authorizedUser?.data.created_at
+                  ? new Date(authorizedUser.data.created_at).toLocaleDateString(
                       "en-GB",
                       {
                         day: "2-digit",
@@ -108,8 +112,8 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </section>
   );
 };
 

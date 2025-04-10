@@ -13,10 +13,30 @@ import { authController } from "../controllers/authController.js";
 const SideBar = () => {
   const { authorizedUser, signOut } = authController();
   const [role, setRole] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     if (authorizedUser) {
       setRole(authorizedUser.data.role);
+    }
+  }, [authorizedUser]);
+
+  useEffect(() => {
+    if (authorizedUser?.data?.id) {
+      const ws = new WebSocket(
+        `ws://localhost:8000/ws/notifications/${authorizedUser.data.id}/`
+      );
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setNotificationCount((prevCount) => prevCount + 1);
+      };
+
+      ws.onopen = () => {
+        console.log("WebSocket connected");
+      };
+
+      return () => ws.close();
     }
   }, [authorizedUser]);
 
@@ -53,12 +73,17 @@ const SideBar = () => {
         to: "/user/notifications",
         icon: <MdNotifications />,
         label: "Notifications",
+        notificationCount: notificationCount,
       },
     ],
   };
 
   const links =
     role === "super_admin" ? sidebarData.super_admin : sidebarData.user;
+
+  const handleNotificationClick = () => {
+    setNotificationCount(0);
+  };
 
   return (
     <aside className="sidebar">
@@ -76,9 +101,19 @@ const SideBar = () => {
             className={({ isActive }) =>
               isActive ? "sidebar-link active" : "sidebar-link"
             }
+            onClick={
+              link.label === "Notifications"
+                ? handleNotificationClick
+                : undefined
+            }
           >
             {link.icon}
             <h4>{link.label}</h4>
+            {link.notificationCount > 0 && link.label === "Notifications" && (
+              <span className="notification-badge">
+                <p>{link.notificationCount}</p>
+              </span>
+            )}
           </NavLink>
         ))}
         <div className="sidebar-link signout" onClick={signOut}>

@@ -89,7 +89,7 @@ const SignInPage = () => {
               </span>
             </div>
             <div className="forgot-password">
-              <Link to="/forgot-password" className="forgot-password">
+              <Link to="/user/forgot-password" className="forgot-password">
                 Forgot Password?
               </Link>
             </div>

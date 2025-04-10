@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
-import { io } from "socket.io-client";
 import { axiosInstance } from "../services/axiosRequests.js";
 
 const BASE_URL = "http://localhost:5000";
@@ -158,7 +157,7 @@ export const authController = create((set, get) => ({
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await axiosInstance.put("/user/update-profile", data);
+      const res = await axiosInstance.put("/update-profile/", data);
       if (res.data) {
         set({ authorizedUser: res.data });
         toast.success("Profile updated successfully!");
@@ -173,7 +172,7 @@ export const authController = create((set, get) => ({
   forgotPassword: async (email) => {
     set({ isSendingForgotPasswordEmail: true });
     try {
-      const res = await axiosInstance.post("/auth/forgot-password", { email });
+      const res = await axiosInstance.post("/forgot-password/", { email });
       if (res.data) {
         toast.success(res.data.message);
       }
@@ -187,7 +186,7 @@ export const authController = create((set, get) => ({
   resetPassword: async (token, password) => {
     set({ isPasswordReset: true });
     try {
-      const res = await axiosInstance.post(`/auth/reset-password/${token}`, {
+      const res = await axiosInstance.post(`/reset-password/${token}`, {
         password,
       });
       if (res.data) {
@@ -333,28 +332,6 @@ export const authController = create((set, get) => ({
     } catch (error) {
     } finally {
       set({ isGettingUserTasksCounts: false });
-    }
-  },
-
-  connectSocket: async () => {
-    const { authorizedUser } = get();
-    if (!authorizedUser || get().socket?.connected) return false;
-
-    const socket = io(BASE_URL, {
-      query: {
-        userID: authorizedUser._id,
-      },
-    });
-    socket.connect();
-    set({ socket: socket });
-    socket.on("", (userIDs) => {
-      set({ onlineUsers: userIDs });
-    });
-  },
-
-  diconnectSocket: async () => {
-    if (get().socket.connected) {
-      get().socket.disconnect();
     }
   },
 }));

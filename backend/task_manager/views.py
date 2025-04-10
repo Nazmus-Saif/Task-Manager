@@ -16,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.views import APIView
-from .utils import send_user_created_email, send_task_assigned_email, save_notification
+from .utils import send_user_created_email, send_task_assigned_email, save_notification, send_notification
 
 
 class TokenRefresh(TokenRefreshView):
@@ -255,6 +255,10 @@ def create_task(request):
             # Store notification with created_by (admin or person assigning the task)
             save_notification(assigned_user, request.user,
                               f"You have been assigned a new task: {task.title}")
+
+            # Send notification to the user via WebSocket
+            send_notification(
+                assigned_user.id, f"You have been assigned a new task: {task.title}")
 
             return Response({"message": "Task created successfully.", "task": serializer.data}, status=status.HTTP_201_CREATED)
         else:

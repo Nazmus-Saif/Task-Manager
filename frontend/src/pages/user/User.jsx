@@ -22,6 +22,7 @@ const User = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [newMessage, setNewMessage] = useState(null);
 
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -42,6 +43,29 @@ const User = () => {
       getUserTasksCounts(authorizedUser.data.id);
     }
   }, [authorizedUser, getUserTasksCounts]);
+
+  useEffect(() => {
+    if (authorizedUser?.data?.id) {
+      const ws = new WebSocket(
+        `ws://localhost:8000/ws/notifications/${authorizedUser.data.id}/`
+      );
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        setNewMessage(data);
+
+        setTimeout(() => {
+          setNewMessage(null);
+        }, 5000);
+      };
+      ws.onopen = () => {
+        console.log("WebSocket connected");
+      };
+
+      return () => ws.close();
+    }
+  }, [authorizedUser]);
 
   const canCreateUser = authorizedUser?.data?.permissions?.create_user;
   const canCreateTask = authorizedUser?.data?.permissions?.create_task;
@@ -239,6 +263,12 @@ const User = () => {
                 </div>
               </form>
             </div>
+          </div>
+        )}
+
+        {newMessage && (
+          <div className="new-message-notification">
+            <p>New task is assigned</p>
           </div>
         )}
       </main>

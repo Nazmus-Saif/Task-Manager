@@ -214,6 +214,42 @@
     transition: transform 0.3s ease;
 }
 
+.new-message-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--highlight-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease;
+}
+
+.notification-badge {
+    color: #e0e0e0;
+    background-color: var(--highlight-color);
+    padding: 0.1rem 0.5rem;
+    border-radius: 5px;
+}
+
+.notification-badge p {
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.new-message-notification p {
+    margin: 0;
+}
+
+.new-message-notification.fade-out {
+    opacity: 0;
+}
+
 .metric-card {
     background: var(--background-color);
     padding: 1.5rem;
