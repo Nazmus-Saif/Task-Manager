@@ -63,3 +63,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notifications
         fields = "__all__"
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6)

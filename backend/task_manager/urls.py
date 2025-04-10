@@ -17,7 +17,9 @@ from .views import (
     CountView,
     UserTaskCountView,
     StatusCountView,
-    UpcomingDeadlinesView
+    UpcomingDeadlinesView,
+    ForgotPasswordView,
+    ResetPasswordView,
 )
 
 urlpatterns = [
@@ -43,4 +45,7 @@ urlpatterns = [
          name="get-upcoming-deadlines"),
     path("get-notifications/<int:user_id>/",
          get_notifications, name="get-notifications"),
+    path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
+    path('reset-password/<str:token>/',
+         ResetPasswordView.as_view(), name='reset-password'),
 ]

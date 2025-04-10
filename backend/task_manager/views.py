@@ -1,4 +1,9 @@
 
+from .models import PasswordResetToken
+from django.contrib.auth.models import User
+from django.conf import settings
+from django.core.mail import send_mail
+import uuid
 from .serializers import NotificationSerializer
 from rest_framework.permissions import IsAuthenticated
 from .models import Tasks
@@ -7,7 +12,7 @@ from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import CreateTaskSerializer, AddUserSerializer, SignInSerializer, NotificationSerializer
+from .serializers import CreateTaskSerializer, AddUserSerializer, SignInSerializer, NotificationSerializer, ResetPasswordSerializer
 from .models import Tasks, Users, Notifications
 from rest_framework import status
 from rest_framework.response import Response
@@ -478,3 +483,54 @@ class UpcomingDeadlinesView(APIView):
             return Response({
                 "error": f"An error occurred while fetching upcoming deadlines: {str(e)}"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ForgotPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email")
+        try:
+            user = Users.objects.get(email=email)
+        except Users.DoesNotExist:
+            return Response({"error": "Email not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = str(uuid.uuid4())
+        PasswordResetToken.objects.create(user=user, token=token)
+
+        reset_link = f"{settings.FRONTEND_URL}/user/reset-password/{token}/"
+
+        send_mail(
+            "Password Reset Request",
+            f"Click the link to reset your password: {reset_link}",
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "Password reset link sent"}, status=status.HTTP_200_OK)
+
+
+class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, token):
+        try:
+            reset_token = PasswordResetToken.objects.get(token=token)
+        except PasswordResetToken.DoesNotExist:
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if reset_token.is_expired:
+            return Response({"error": "Token has expired"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = reset_token.user
+            user.set_password(serializer.validated_data["password"])
+            user.save()
+
+            reset_token.delete()
+
+            return Response({"message": "Password reset successful"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

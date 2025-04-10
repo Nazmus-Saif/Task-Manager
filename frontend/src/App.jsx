@@ -83,7 +83,10 @@ function App() {
         <Routes>
           <Route path="/user/signin" element={<AuthRedirect />} />
           <Route path="/user/forgot-password" element={<ForgotPassword />} />
-          <Route path="/user/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/user/reset-password/:token"
+            element={<ResetPassword />}
+          />
           <Route
             path="/user/profile"
             element={

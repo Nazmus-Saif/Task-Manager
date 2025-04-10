@@ -2,8 +2,6 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../services/axiosRequests.js";
 
-const BASE_URL = "http://localhost:5000";
-
 export const authController = create((set, get) => ({
   authorizedUser: null,
   isSigningUp: false,
@@ -54,7 +52,7 @@ export const authController = create((set, get) => ({
     try {
       await axiosInstance.post("/token/refresh/");
     } catch (error) {
-      toast.error(error.response?.data?.error);
+      // toast.error(error.response?.data?.error);
     }
   },
 
@@ -186,7 +184,7 @@ export const authController = create((set, get) => ({
   resetPassword: async (token, password) => {
     set({ isPasswordReset: true });
     try {
-      const res = await axiosInstance.post(`/reset-password/${token}`, {
+      const res = await axiosInstance.post(`/reset-password/${token}/`, {
         password,
       });
       if (res.data) {

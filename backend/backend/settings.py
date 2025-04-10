@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'channels',
 ]
 
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -73,8 +72,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -128,6 +125,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 SECURE_COOKIE = True
 AUTH_USER_MODEL = 'task_manager.Users'
+FRONTEND_URL = 'http://localhost:5173'
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
