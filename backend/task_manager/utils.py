@@ -47,12 +47,27 @@ def save_notification(user, created_by, message):
         user=user, created_by=created_by, message=message)
 
 
-def send_notification(user_id, message):
+def send_task_add_notification(user_id, message):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"user_{user_id}",
         {
             "type": "send_notification",
             "message": message,
+        }
+    )
+
+
+def send_task_status_change_notification(user, task, new_status):
+    username = user.name
+    task_name = task.title
+    status_change_message = f"{username} assigned task '{task_name}' is {new_status}"
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "admin_group",
+        {
+            "type": "send_notification",
+            "message": status_change_message
         }
     )

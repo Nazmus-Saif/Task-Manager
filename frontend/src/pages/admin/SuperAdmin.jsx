@@ -44,6 +44,7 @@ const AdminDashboard = () => {
   } = authController();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
 
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -58,6 +59,28 @@ const AdminDashboard = () => {
     getStatusCounts();
     getUpcomingDeadlines();
   }, []);
+
+  useEffect(() => {
+    if (authorizedUser?.data?.id) {
+      const ws = new WebSocket(
+        `ws://localhost:8000/ws/status_update/${authorizedUser.data.id}/`
+      );
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setNewMessage(data);
+
+        setTimeout(() => {
+          setNewMessage(null);
+        }, 5000);
+      };
+      ws.onopen = () => {
+        console.log("WebSocket connected");
+      };
+
+      return () => ws.close();
+    }
+  }, [authorizedUser]);
 
   const handleTaskFormSubmit = async (e) => {
     e.preventDefault();
@@ -325,6 +348,11 @@ const AdminDashboard = () => {
           </div>
         </div>
       </main>
+      {newMessage && (
+        <div className="new-message-notification">
+          <p>{newMessage}</p>
+        </div>
+      )}
     </section>
   );
 };

@@ -52,7 +52,6 @@ const User = () => {
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data);
         setNewMessage(data);
 
         setTimeout(() => {
@@ -268,7 +267,7 @@ const User = () => {
 
         {newMessage && (
           <div className="new-message-notification">
-            <p>New task is assigned</p>
+            <p>{newMessage}</p>
           </div>
         )}
       </main>

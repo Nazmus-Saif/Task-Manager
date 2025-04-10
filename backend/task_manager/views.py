@@ -1,6 +1,6 @@
 
+from .utils import send_task_status_change_notification
 from .models import PasswordResetToken
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import send_mail
 import uuid
@@ -21,7 +21,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.views import APIView
-from .utils import send_user_created_email, send_task_assigned_email, save_notification, send_notification
+from .utils import send_user_created_email, send_task_assigned_email, save_notification, send_task_add_notification, send_task_status_change_notification
 
 
 class TokenRefresh(TokenRefreshView):
@@ -257,12 +257,10 @@ def create_task(request):
             task = serializer.save()
             send_task_assigned_email(assigned_user, task)
 
-            # Store notification with created_by (admin or person assigning the task)
             save_notification(assigned_user, request.user,
                               f"You have been assigned a new task: {task.title}")
 
-            # Send notification to the user via WebSocket
-            send_notification(
+            send_task_add_notification(
                 assigned_user.id, f"You have been assigned a new task: {task.title}")
 
             return Response({"message": "Task created successfully.", "task": serializer.data}, status=status.HTTP_201_CREATED)
@@ -341,26 +339,23 @@ def edit_task(request, task_id):
 
         allowed_fields = {"title", "description", "status",
                           "priority", "deadline", "assigned_to", "assigned_by"}
-        non_editable_fields = {
-            key: value for key, value in request.data.items() if key not in allowed_fields}
 
-        if non_editable_fields:
-            field_names = ', '.join(non_editable_fields.keys())
-            return Response({"error": f"Fields {field_names} cannot be changed."}, status=status.HTTP_400_BAD_REQUEST)
+        updated_task_data = {
+            key: value for key, value in request.data.items() if key in allowed_fields
+        }
 
-        if "assigned_to" in request.data:
-            assigned_user = Users.objects.filter(
-                id=request.data["assigned_to"]).first()
-            if not assigned_user:
-                return Response({"error": "Assigned user not found."}, status=status.HTTP_404_NOT_FOUND)
+        if "status" in updated_task_data:
+            send_task_status_change_notification(
+                request.user, task, updated_task_data["status"])
 
         serializer = CreateTaskSerializer(
-            task, data=request.data, partial=True)
+            task, data=updated_task_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Task updated successfully.", "task": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid data for task update.", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as e:
         return Response({"error": f"Error updating task: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
