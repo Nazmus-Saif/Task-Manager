@@ -1,5 +1,10 @@
 # Ignore environment variables
-.env
+frontent/.env
+backend/.env
+
+#  Ignore python cache files
+backend/backend/__pycache__
+backend/task_manager/__pycache__
 
 # Ignore node_modules directory
-frontend/node_modules/
+frontend/node_modules
