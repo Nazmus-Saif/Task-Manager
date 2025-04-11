@@ -29,4 +29,4 @@ COPY . .
 EXPOSE 8000
 
 # Run migrations and start Django server
-CMD [ "python", "manage.py", "runserver]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"]
