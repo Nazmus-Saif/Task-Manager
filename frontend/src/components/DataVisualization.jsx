@@ -45,7 +45,7 @@ const UpcomingDeadlinesChart = ({ data }) => {
           data={chartData}
           margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#374045" />
+          <CartesianGrid stroke="none" />
           <XAxis dataKey="title" stroke="#ccc" tick={{ fontSize: 12 }} />
           <YAxis
             stroke="#ccc"

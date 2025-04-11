@@ -380,7 +380,7 @@ def delete_task(request, task_id):
 class CountView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            if not (request.user.is_superuser or request.user.permissions.get("get_task", False)):
+            if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
                 return Response({"error": "You don't have permission to read this counts."}, status=status.HTTP_403_FORBIDDEN)
 
             total_roles = Users.objects.values('role').distinct().count()
@@ -411,9 +411,9 @@ class UserTaskCountView(APIView):
             user_tasks = Tasks.objects.filter(assigned_to=user_id)
 
             total_tasks = user_tasks.count()
-            total_completed = user_tasks.filter(status="Complete").count()
-            total_pending = user_tasks.filter(status="Pending").count()
-            total_in_progress = user_tasks.filter(status="In Progress").count()
+            total_completed = user_tasks.filter(status="completed").count()
+            total_pending = user_tasks.filter(status="pending").count()
+            total_in_progress = user_tasks.filter(status="in-progress").count()
 
             return Response({
                 "message": "User task count retrieved successfully.",
