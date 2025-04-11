@@ -464,8 +464,8 @@ class UpcomingDeadlinesView(APIView):
                 return Response({"error": "You don't have permission to read upcoming deadlines."}, status=status.HTTP_403_FORBIDDEN)
 
             today = now().date()
-            upcoming_tasks = Tasks.objects.filter(deadline__gte=today).order_by('deadline')[
-                :10]
+            upcoming_tasks = Tasks.objects.filter(
+                deadline__gte=today).order_by('deadline')[:10]
 
             serializer = CreateTaskSerializer(upcoming_tasks, many=True)
 
