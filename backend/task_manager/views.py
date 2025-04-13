@@ -1,4 +1,3 @@
-
 from .utils import send_task_status_change_notification
 from .models import PasswordResetToken
 from django.conf import settings

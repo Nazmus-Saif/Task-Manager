@@ -108,11 +108,43 @@
 
 
 /* Forgot Password */
-.forgot-password {
+.forgot-password-wrapper,
+.social-signin-wrapper {
   text-align: center;
-  color: #05aecb;
+}
+
+.forgot-password,
+.social-signin {
   font-size: 0.85rem;
   font-weight: 500;
+}
+
+.forgot-password {
+  color: #05aecb;
+}
+
+.or-separator {
+  text-align: center;
+  color: #bbb;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.social-signin-wrapper {
+  margin-top: 1rem;
+  border: 1px solid #bbb;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #05aecb;
+  border-radius: 10px;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.social-signin {
+  color: #05aecb;
 }
 
 /* Forgot Password Page Heading */

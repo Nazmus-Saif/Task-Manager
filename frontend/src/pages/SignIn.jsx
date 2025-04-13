@@ -88,7 +88,7 @@ const SignInPage = () => {
                 {isSignInPasswordVisible ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <div className="forgot-password">
+            <div className="forgot-password-wrapper">
               <Link to="/user/forgot-password" className="forgot-password">
                 Forgot Password?
               </Link>
@@ -100,6 +100,12 @@ const SignInPage = () => {
             >
               {isSigningIn ? <FaSpinner className="loading-icon" /> : "Sign In"}
             </button>
+            <div className="or-separator">
+              <span>or</span>
+            </div>
+            <div className="social-signin-wrapper">
+              <Link className="social-signin">Continue with Google</Link>
+            </div>
           </div>
         </form>
       </div>
