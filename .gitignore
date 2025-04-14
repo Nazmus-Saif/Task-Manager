@@ -1,8 +1,8 @@
 # Ignoree .idea files
-.idea/
+./.idea
 
 # Ignore environment variables
-frontent/.env
+frontend/.env
 backend/.env
 
 #  Ignore python cache files
