@@ -1,3 +1,6 @@
+# Ignoree .open files
+.open
+
 # Ignore environment variables
 frontent/.env
 backend/.env
