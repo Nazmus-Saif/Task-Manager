@@ -37,7 +37,7 @@ export const authController = create((set, get) => ({
   checkAuth: async () => {
     set({ isCheckingAuthentication: true });
     try {
-      const res = await axiosInstance.get("/check-auth-user/");
+      const res = await axiosInstance.get("token/check-auth-user/");
       set({ authorizedUser: res.data });
     } catch (error) {
       if (error.response?.status === 401) {
@@ -50,7 +50,7 @@ export const authController = create((set, get) => ({
 
   refreshToken: async () => {
     try {
-      await axiosInstance.post("/token/refresh/");
+      await axiosInstance.post("token/refresh-token/");
     } catch (error) {
       // toast.error(error.response?.data?.error);
     }
@@ -59,7 +59,7 @@ export const authController = create((set, get) => ({
   signUp: async (data) => {
     set({ isSigningUp: true });
     try {
-      const res = await axiosInstance.post("/add-user/", data);
+      const res = await axiosInstance.post("users/create-retrieve/", data);
       if (res.data) {
         toast.success("User created successfully!");
       }
@@ -70,10 +70,35 @@ export const authController = create((set, get) => ({
     }
   },
 
+  signIn: async (data) => {
+    set({ isSigningIn: true });
+    try {
+      const res = await axiosInstance.post("users/sign-in/", data);
+      if (res.data) {
+        set({ authorizedUser: res.data });
+        toast.success("Signed in successfully!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    } finally {
+      set({ isSigningIn: false });
+    }
+  },
+
+  signOut: async () => {
+    try {
+      await axiosInstance.post("users/sign-out/");
+      set({ authorizedUser: null });
+      toast.success("Signed out successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    }
+  },
+
   getUsers: async () => {
     set({ isUserFetching: true });
     try {
-      const res = await axiosInstance.get("/get-users/");
+      const res = await axiosInstance.get("users/create-retrieve/");
       if (res.data) {
         set({ users: res.data.users });
       }
@@ -86,7 +111,10 @@ export const authController = create((set, get) => ({
   updateUser: async (userId, data) => {
     set({ isUserUpdating: true });
     try {
-      const res = await axiosInstance.put(`/edit-user/${userId}/`, data);
+      const res = await axiosInstance.put(
+        `users/update-delete/${userId}/`,
+        data
+      );
       if (res.data) {
         toast.success("User updated successfully!");
       }
@@ -100,7 +128,7 @@ export const authController = create((set, get) => ({
   deleteUser: async (userId) => {
     set({ isUserDeleting: true });
     try {
-      const res = await axiosInstance.delete(`/delete-user/${userId}/`);
+      const res = await axiosInstance.delete(`users/update-delete/${userId}/`);
       if (res.data) {
         toast.success("User deleted successfully!");
       }
@@ -127,31 +155,6 @@ export const authController = create((set, get) => ({
     }
   },
 
-  signIn: async (data) => {
-    set({ isSigningIn: true });
-    try {
-      const res = await axiosInstance.post("/sign-in/", data);
-      if (res.data) {
-        set({ authorizedUser: res.data });
-        toast.success("Signed in successfully!");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.error);
-    } finally {
-      set({ isSigningIn: false });
-    }
-  },
-
-  signOut: async () => {
-    try {
-      await axiosInstance.post("/sign-out/");
-      set({ authorizedUser: null });
-      toast.success("Signed out successfully!");
-    } catch (error) {
-      toast.error(error.response?.data?.error);
-    }
-  },
-
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
@@ -170,7 +173,7 @@ export const authController = create((set, get) => ({
   forgotPassword: async (email) => {
     set({ isSendingForgotPasswordEmail: true });
     try {
-      const res = await axiosInstance.post("/forgot-password/", { email });
+      const res = await axiosInstance.post("users/forgot-password/", { email });
       if (res.data) {
         toast.success(res.data.message);
       }
@@ -184,7 +187,7 @@ export const authController = create((set, get) => ({
   resetPassword: async (token, password) => {
     set({ isPasswordReset: true });
     try {
-      const res = await axiosInstance.post(`/reset-password/${token}/`, {
+      const res = await axiosInstance.post(`users/reset-password/${token}/`, {
         password,
       });
       if (res.data) {
@@ -242,7 +245,7 @@ export const authController = create((set, get) => ({
   getNotifications: async (userId) => {
     set({ isGettingNotifications: true });
     try {
-      const res = await axiosInstance.get(`/get-notifications/${userId}/`);
+      const res = await axiosInstance.get(`users/get-notifications/${userId}/`);
       if (res.data) {
         set({ notifications: res.data.notifications });
       }

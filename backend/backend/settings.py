@@ -26,7 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'task_manager',
+    'accounts',
+    'tasks',
+    'notifications',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -43,7 +45,7 @@ SIMPLE_JWT = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'task_manager.auth.CookiesJWTAuthentication',
+        'accounts.auth.CookiesJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -133,7 +135,7 @@ CORS_ALLOW_CREDENTIALS = True
 SECURE_COOKIE = True
 
 # Custom User Model
-AUTH_USER_MODEL = 'task_manager.Users'
+AUTH_USER_MODEL = 'accounts.Users'
 
 # Frontend URL
 FRONTEND_URL = os.getenv("FRONTEND_URL")
