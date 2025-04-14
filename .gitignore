@@ -1,5 +1,5 @@
 # Ignoree .idea files
-.idea
+.idea/
 
 # Ignore environment variables
 frontent/.env
