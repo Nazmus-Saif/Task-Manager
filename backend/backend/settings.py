@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'channels',
+    'django_celery_results',
 ]
 
 SIMPLE_JWT = {
@@ -150,3 +151,12 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_TIMEZONE = 'Asia/Dhaka'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

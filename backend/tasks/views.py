@@ -28,10 +28,10 @@ def create_task(request):
         serializer = CreateTaskSerializer(data=request.data)
         if serializer.is_valid():
             task = serializer.save()
-            send_task_assigned_email(assigned_user, task)
+            send_task_assigned_email.delay(assigned_user.id, task.id)
 
             save_notification(assigned_user, request.user,
-                              f"You have been assigned a new task: {task.title}")
+                              f"You have been assigned a new task: {task.title}", task)
 
             send_task_add_notification(
                 assigned_user.id, f"You have been assigned a new task: {task.title}")
@@ -101,7 +101,7 @@ def edit_task(request, task_id):
 
         if "status" in updated_task_data:
             send_task_status_change_notification(
-                request.user, task, updated_task_data["status"])
+                request.user.id, task.id, updated_task_data["status"])
 
         serializer = CreateTaskSerializer(
             task, data=updated_task_data, partial=True)

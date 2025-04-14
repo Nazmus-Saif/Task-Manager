@@ -1,4 +1,3 @@
-/* Page Styles */
 .signin-page,
 .verify-email-page,
 .forgot-password-page {
@@ -12,7 +11,6 @@
   justify-content: center;
 }
 
-/* Card Styles */
 .signin-card,
 .verification-card,
 .forgot-password-card {
@@ -25,7 +23,6 @@
   overflow: hidden;
 }
 
-/* Card Heading */
 .card-heading {
   text-align: center;
   margin-bottom: 30px;
@@ -37,7 +34,6 @@
   color: #e0e0e0;
 }
 
-/* Form Content */
 .form-content h2 {
   font-size: 2rem;
   font-weight: 500;
@@ -53,14 +49,12 @@
   text-align: center;
 }
 
-/* Form Input Wrapper */
 .form-input-wrapper {
   position: relative;
   height: 50px;
   margin-bottom: 1rem;
 }
 
-/* Form Input Fields */
 .form-input-field,
 .forgot-password-form-input-field {
   width: 100%;
@@ -79,7 +73,6 @@
   font-weight: 500;
 }
 
-/* Password Toggle Icon */
 .password-toggle-icon {
   position: absolute;
   right: 12px;
@@ -106,8 +99,6 @@
   margin-right: 8px;
 }
 
-
-/* Forgot Password */
 .forgot-password-wrapper,
 .social-signin-wrapper {
   text-align: center;
@@ -136,18 +127,19 @@
   border: 1px solid #bbb;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #05aecb;
-  border-radius: 10px;
   transition: 0.2s ease-in;
   cursor: pointer;
   text-transform: uppercase;
 }
 
-.social-signin {
-  color: #05aecb;
+.social-signin-wrapper:hover {
+  background-color: #2D3437;
 }
 
-/* Forgot Password Page Heading */
+.social-signin {
+  color: #e0e0e0;
+}
+
 .verification-heading,
 .forgot-password-heading {
   font-size: 2rem;
@@ -157,7 +149,6 @@
   color: #e0e0e0;
 }
 
-/* Forgot Password Text */
 .verification-text,
 .forgot-password-text {
   font-size: 1rem;
@@ -167,7 +158,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Forgot Password Form */
 .otp-form,
 .forgot-password-form {
   display: flex;
@@ -175,13 +165,11 @@
   gap: 1.5rem;
 }
 
-/* Forgot Password Form Input Wrapper */
 .forgot-password-form-input-wrapper {
   position: relative;
   height: 50px;
 }
 
-/* Back to Sign In */
 .back-to-signin {
   display: flex;
   justify-content: center;
@@ -192,7 +180,6 @@
   font-weight: 500;
 }
 
-/* Form Button */
 .form-button,
 .verify-button {
   display: block;

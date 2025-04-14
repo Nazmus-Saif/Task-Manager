@@ -16,7 +16,7 @@ class UserManagementSerializer(serializers.ModelSerializer):
         raw_password = validated_data.get("password")
         validated_data["password"] = make_password(raw_password)
         user = Users.objects.create(**validated_data)
-        send_user_created_email(user, raw_password)
+        send_user_created_email.delay(user.id, raw_password)
         return user
 
     def update(self, instance, validated_data):

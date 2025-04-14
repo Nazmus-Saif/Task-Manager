@@ -1,4 +1,3 @@
-/* Root Variables */
 :root {
     --primary-color: #05aecb;
     --highlight-color: #d66c01;
@@ -10,13 +9,12 @@
     --transition-1: 0.25s ease;
 }
 
-/* Layout */
 .dashboard-container {
     height: 100dvh;
-    background: var(--background-color);
+    width: 100%;
     display: grid;
     grid-template-columns: 17rem auto;
-    width: 100%;
+    background: var(--background-color);
     color: var(--text-dark);
 }
 
@@ -24,7 +22,6 @@
     font-size: 1.5rem;
 }
 
-/* Sidebar */
 .sidebar {
     height: 100vh;
     background: var(--sidebar-bg);
@@ -35,10 +32,10 @@
 }
 
 .sidebar-logo h1 {
-    color: var(--primary-color);
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 2rem;
+    color: var(--primary-color);
     display: flex;
     gap: 0.5rem;
 }
@@ -57,11 +54,11 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    color: var(--text-light);
     padding: 1rem;
+    color: var(--text-light);
     width: 100%;
-    transition: 0.3s ease;
     border-radius: 8px;
+    transition: var(--transition-1);
 }
 
 .sidebar-link:hover,
@@ -70,13 +67,87 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Main Content */
 .main-content {
     padding: 1.4rem;
     overflow-y: auto;
 }
 
-/* Sign-Up Form Floating Div */
+.dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.6rem;
+}
+
+.metric-card {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: scale(1.05);
+}
+
+.metric-card svg {
+    font-size: 5rem;
+    color: #f4a261;
+    border-radius: 10px;
+}
+
+.metric-details {
+    text-align: right;
+}
+
+.metric-details h1 {
+    font-size: 2.5rem;
+}
+
+.metric-details h3 {
+    font-size: 1.2rem;
+    color: var(--text-light);
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+}
+
+.top-nav h1 {
+    font-size: 2rem;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-nav .profile {
+    display: flex;
+    align-items: center;
+}
+
+.top-nav .profile img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.dashboard-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
 .form-container {
     position: fixed;
     top: 0;
@@ -117,7 +188,7 @@
 }
 
 .form-wrapper {
-    background-color: #202528;
+    background-color: var(--background-color);
     position: relative;
     transform: scale(1.2);
     opacity: 0;
@@ -149,49 +220,6 @@
     opacity: 0.8;
 }
 
-/* Top Navbar */
-.top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: #202528;
-}
-
-.top-nav h1 {
-    font-size: 2rem;
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.top-nav .profile {
-    display: flex;
-    align-items: center;
-}
-
-.top-nav .profile img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: 1px solid black;
-}
-
-.dashboard-title {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-}
-
-/* Dashboard Metrics */
-.dashboard-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.6rem;
-}
-
 .notifications {
     text-align: center;
 }
@@ -203,6 +231,7 @@
 }
 
 .notification-item {
+    position: relative;
     background: var(--background-color);
     padding: 1.5rem;
     border-radius: 1rem;
@@ -212,6 +241,53 @@
     justify-content: space-between;
     gap: 1rem;
     transition: transform 0.3s ease;
+}
+
+.notification-item:hover {
+    transform: scale(1.01);
+}
+
+.notification-item small {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: gray;
+}
+
+.notification-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f0f0f0;
+    margin-bottom: 0.25rem;
+}
+
+.notification-content p {
+    font-size: 0.95rem;
+    color: #d0d0d0;
+    margin: 0.25rem 0;
+}
+
+.notification-task-description {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+    margin-top: 0.3rem;
+}
+
+.notification-task-description strong {
+    color: #f5a623;
+    font-weight: 500;
+}
+
+.notification-badge {
+    color: #e0e0e0;
+    background-color: var(--highlight-color);
+    padding: 0.1rem 0.5rem;
+    border-radius: 5px;
+}
+
+.notification-badge p {
+    font-size: 0.7rem;
+    font-weight: bold;
 }
 
 .new-message-notification {
@@ -230,18 +306,6 @@
     transition: opacity 0.3s ease;
 }
 
-.notification-badge {
-    color: #e0e0e0;
-    background-color: var(--highlight-color);
-    padding: 0.1rem 0.5rem;
-    border-radius: 5px;
-}
-
-.notification-badge p {
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
 .new-message-notification p {
     margin: 0;
 }
@@ -250,50 +314,6 @@
     opacity: 0;
 }
 
-.metric-card {
-    background: var(--background-color);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: var(--box-shadow);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    transition: transform 0.3s ease;
-}
-
-.metric-card:hover {
-    transform: scale(1.05);
-}
-
-.notification-content small {
-    color: gray;
-}
-
-.notification-item:hover {
-    transform: scale(1.01);
-}
-
-.metric-card svg {
-    font-size: 5rem;
-    color: #f4a261;
-    border-radius: 10px;
-}
-
-.metric-details {
-    text-align: right;
-}
-
-.metric-details h3 {
-    font-size: 1.2rem;
-    color: var(--text-light);
-}
-
-.metric-details h1 {
-    font-size: 2.5rem;
-}
-
-/* Chat section */
 .chart-section {
     margin-top: 30px;
     text-align: center;
@@ -306,7 +326,6 @@
     margin-top: 30px;
 }
 
-/* Task Overview Section */
 .task-section {
     margin-top: 2rem;
 }
@@ -316,7 +335,6 @@
     margin-bottom: 1rem;
 }
 
-/* Task Table */
 .task-table {
     width: 100%;
     background: var(--background-color);
@@ -340,8 +358,6 @@ td {
     color: var(--text-light);
 }
 
-
-/* Action Buttons */
 .action-buttons {
     display: flex;
     justify-content: center;
@@ -499,8 +515,6 @@ h2 {
     opacity: 0.9;
 }
 
-
-/* Responsive Design */
 @media screen and (max-width: 1024px) {
     .dashboard-container {
         grid-template-columns: 1fr;
@@ -551,7 +565,6 @@ h2 {
         padding-bottom: 5rem;
     }
 }
-
 
 @media screen and (max-width: 650px) {
     .dashboard-metrics {

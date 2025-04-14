@@ -14,6 +14,7 @@ const Notifications = () => {
   useEffect(() => {
     if (authorizedUser?.data?.id) {
       getNotifications(authorizedUser.data.id);
+      console.log(notifications);
     }
   }, [authorizedUser, getNotifications]);
 
@@ -37,11 +38,18 @@ const Notifications = () => {
               {notifications.map((notification) => (
                 <li key={notification.id} className="notification-item">
                   <div className="notification-content">
+                    <h3>{notification.created_by_name}</h3>
                     <p>{notification.message}</p>
-                    <small>
-                      {new Date(notification.created_at).toLocaleString()}
-                    </small>
+                    {notification.task?.description && (
+                      <p className="notification-task-description">
+                        <strong>Description:</strong>{" "}
+                        {notification.task.description}
+                      </p>
+                    )}
                   </div>
+                  <small>
+                    {new Date(notification.created_at).toLocaleString()}
+                  </small>
                 </li>
               ))}
             </ul>
