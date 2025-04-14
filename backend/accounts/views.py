@@ -44,98 +44,97 @@ class TokenRefresh(TokenRefreshView):
             return Response({"error": f"Failed to refresh token. Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def check_auth_user(request):
-    try:
-        user = request.user
+class CheckAuthUserView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        data = {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name,
-            "role": user.role,
-            "permissions": user.permissions,
-            "is_staff": user.is_staff,
-            "is_superuser": user.is_superuser,
-            "created_at": user.created_at,
-            "updated_at": user.updated_at,
-        }
+    def get(self, request):
+        try:
+            user = request.user
+            data = {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "role": user.role,
+                "permissions": user.permissions,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at,
+            }
 
-        return Response({
-            "success": True,
-            "message": "User is authenticated.",
-            "data": data
-        }, status=status.HTTP_200_OK)
+            return Response({
+                "success": True,
+                "message": "User is authenticated.",
+                "data": data
+            }, status=status.HTTP_200_OK)
 
-    except Exception as e:
-        return Response({
-            "error": f"Error checking authentication status: {str(e)}"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def sign_in(request):
-    try:
-        serializer = SignInSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response({"error": "Invalid signin credentials.", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        email = serializer.validated_data.get("email")
-        password = serializer.validated_data.get("password")
-
-        user = Users.objects.filter(email=email).first()
-        if not user:
-            return Response({"error": "Invalid email or password."}, status=status.HTTP_404_NOT_FOUND)
-
-        if check_password(password, user.password):
-            user.last_login = now()
-            user.save(update_fields=["last_login"])
-
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
-            refresh_token = str(refresh)
-
-            data = SignInSerializer(user).data
-
-            res = Response({"message": "Signin successful.",
-                           "data": data}, status=status.HTTP_200_OK)
-            res.set_cookie(
-                key="access_token",
-                value=access_token,
-                httponly=True,
-                samesite="None",
-                secure=True,
-                max_age=3600 * 24,
-            )
-            res.set_cookie(
-                key="refresh_token",
-                value=refresh_token,
-                httponly=True,
-                samesite="None",
-                secure=True,
-                max_age=3600 * 24 * 7,
-            )
-
-            return res
-        else:
-            return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as e:
-        return Response({"error": f"Error during sign-in: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({
+                "error": f"Error checking authentication status: {str(e)}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def sign_out(request):
-    try:
-        response = Response(
-            {"message": "Signed out successfully!"}, status=status.HTTP_200_OK)
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
-        return response
-    except Exception as e:
-        return Response({"error": f"Error during sign-out: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class SignInView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            serializer = SignInSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response({"error": "Invalid signin credentials.", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+            email = serializer.validated_data.get("email")
+            password = serializer.validated_data.get("password")
+
+            user = Users.objects.filter(email=email).first()
+            if not user:
+                return Response({"error": "Invalid email or password."}, status=status.HTTP_404_NOT_FOUND)
+
+            if check_password(password, user.password):
+                user.last_login = now()
+                user.save(update_fields=["last_login"])
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+                data = SignInSerializer(user).data
+                res = Response({"message": "Signin successful.",
+                                "data": data}, status=status.HTTP_200_OK)
+                res.set_cookie(
+                    key="access_token",
+                    value=access_token,
+                    httponly=True,
+                    samesite="None",
+                    secure=True,
+                    max_age=3600 * 24,
+                )
+                res.set_cookie(
+                    key="refresh_token",
+                    value=refresh_token,
+                    httponly=True,
+                    samesite="None",
+                    secure=True,
+                    max_age=3600 * 24 * 7,
+                )
+
+                return res
+            else:
+                return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"error": f"Error during sign-in: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SignOutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            response = Response(
+                {"message": "Signed out successfully!"}, status=status.HTTP_200_OK)
+            response.delete_cookie("access_token")
+            response.delete_cookie("refresh_token")
+            return response
+        except Exception as e:
+            return Response({"error": f"Error during sign-out: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserManagementView(APIView):

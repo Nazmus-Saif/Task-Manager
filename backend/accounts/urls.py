@@ -1,21 +1,22 @@
 from django.urls import path
 from .views import (
-    check_auth_user,
+    CheckAuthUserView,
     TokenRefresh,
-    sign_in,
-    sign_out,
+    SignInView,
+    SignOutView,
+    UserManagementView,
     ForgotPasswordView,
     ResetPasswordView,
-    UserManagementView,
 )
 
 urlpatterns = [
     # Authentication Routes
-    path("token/check-auth-user/", check_auth_user, name="check-auth-user"),
+    path("token/check-auth-user/",
+         CheckAuthUserView.as_view(), name="check-auth-user"),
     path("token/refresh-token/",
          TokenRefresh.as_view(), name="token-refresh"),
-    path("users/sign-in/", sign_in, name="users-sign-in"),
-    path("users/sign-out/", sign_out, name="users-sign-out"),
+    path("users/sign-in/", SignInView.as_view(), name="users-sign-in"),
+    path("users/sign-out/", SignOutView.as_view(), name="users-sign-out"),
 
     # User Management Routes
     path("users/create-retrieve/", UserManagementView.as_view(),
