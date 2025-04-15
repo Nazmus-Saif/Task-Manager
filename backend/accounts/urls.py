@@ -4,6 +4,8 @@ from .views import (
     TokenRefresh,
     SignInView,
     SignOutView,
+    RoleListView,
+    RoleCreateView,
     UserManagementView,
     ForgotPasswordView,
     ResetPasswordView,
@@ -19,6 +21,8 @@ urlpatterns = [
     path("users/sign-out/", SignOutView.as_view(), name="users-sign-out"),
 
     # User Management Routes
+    path('roles/create/', RoleCreateView.as_view(), name='role-create'),
+    path('roles/retrieve/', RoleListView.as_view(), name='role-list'),
     path("users/create-retrieve/", UserManagementView.as_view(),
          name="users-create-retrieve"),
     path("users/update-delete/<int:user_id>/",

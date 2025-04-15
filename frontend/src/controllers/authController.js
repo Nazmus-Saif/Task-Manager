@@ -7,6 +7,9 @@ export const authController = create((set, get) => ({
   isSigningUp: false,
   isVerifyingEmail: false,
   isSigningIn: false,
+  roles: [],
+  isCreatingRole: false,
+  isFetchingRoles: false,
   isUpdatingProfile: false,
   isCheckingAuthentication: true,
   isSendingForgotPasswordEmail: false,
@@ -92,6 +95,34 @@ export const authController = create((set, get) => ({
       toast.success("Signed out successfully!");
     } catch (error) {
       toast.error(error.response?.data?.error);
+    }
+  },
+
+  createRole: async (data) => {
+    set({ isCreatingRole: true });
+    try {
+      const res = await axiosInstance.post("roles/create/", data);
+      if (res.data) {
+        toast.success("Role created successfully!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    } finally {
+      set({ isCreatingRole: false });
+    }
+  },
+
+  getRoles: async () => {
+    set({ isFetchingRoles: true });
+    try {
+      const res = await axiosInstance.get("roles/retrieve/");
+      if (res.data) {
+        set({ roles: res.data });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    } finally {
+      set({ isFetchingRoles: false });
     }
   },
 

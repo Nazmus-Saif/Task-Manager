@@ -1,3 +1,6 @@
+from .serializers import RolesSerializer
+from .models import Roles
+from rest_framework import status, generics
 from .models import PasswordResetToken
 from django.conf import settings
 from django.core.mail import send_mail
@@ -134,6 +137,16 @@ class SignOutView(APIView):
             return response
         except Exception as e:
             return Response({"error": f"Error during sign-out: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RoleCreateView(generics.CreateAPIView):
+    queryset = Roles.objects.all()
+    serializer_class = RolesSerializer
+
+
+class RoleListView(generics.ListAPIView):
+    queryset = Roles.objects.all()
+    serializer_class = RolesSerializer
 
 
 class UserManagementView(APIView):

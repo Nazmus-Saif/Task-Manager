@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
 import SignUpForm from "../../components/SignUpForm.jsx";
 import CreateTaskForm from "../../components/CreateTaskForm.jsx";
-import RolePermissions from "../../components/RolePermissions.jsx";
+import RolePermissionsForm from "../../components/RolePermissions.jsx";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
             >
               &times;
             </button>
-            <RolePermissions />
+            <RolePermissionsForm />
           </div>
         </div>
 

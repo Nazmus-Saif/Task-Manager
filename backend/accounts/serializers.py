@@ -1,7 +1,13 @@
-from .models import Users
+from .models import Users, Roles
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from notifications.utils import send_user_created_email
+
+
+class RolesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = '__all__'
 
 
 class UserManagementSerializer(serializers.ModelSerializer):
