@@ -15,23 +15,36 @@ const User = () => {
     getUpcomingDeadlines,
     getUserTasksCounts,
     userTasksCounts,
+    notifications,
+    getNotifications,
   } = authController();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [newMessage, setNewMessage] = useState(null);
-
-  useEffect(() => {
-    getCounts();
-    getStatusCounts();
-    getUpcomingDeadlines();
-  }, []);
+  const [taskPopup, setTaskPopup] = useState(null);
 
   useEffect(() => {
     if (authorizedUser?.data?.id) {
+      getCounts();
+      getStatusCounts();
+      getUpcomingDeadlines();
       getUserTasksCounts(authorizedUser.data.id);
+      getNotifications(authorizedUser.data.id);
     }
-  }, [authorizedUser, getUserTasksCounts]);
+    if (notifications.length > 0) {
+      const latestTask = notifications[0].task;
+      setTaskPopup(latestTask);
+    }
+  }, [
+    authorizedUser,
+    getCounts,
+    getStatusCounts,
+    getUpcomingDeadlines,
+    getUserTasksCounts,
+    getNotifications,
+    notifications,
+  ]);
 
   useEffect(() => {
     if (authorizedUser?.data?.id) {
@@ -47,6 +60,7 @@ const User = () => {
           setNewMessage(null);
         }, 5000);
       };
+
       ws.onopen = () => {
         console.log("WebSocket connected");
       };
@@ -161,6 +175,36 @@ const User = () => {
         {newMessage && (
           <div className="new-message-notification">
             <p>{newMessage}</p>
+          </div>
+        )}
+
+        {newMessage && (
+          <div className="task-popup">
+            <button
+              className="close-btn"
+              onClick={() => {
+                localStorage.setItem("dismissedTaskId", taskPopup.id);
+                setTaskPopup(null);
+              }}
+            >
+              &times;
+            </button>
+            <h3>📝 New Task Assigned</h3>
+            <p>
+              <strong>Title:</strong> {taskPopup.title}
+            </p>
+            <p>
+              <strong>Description:</strong> {taskPopup.description}
+            </p>
+            <p>
+              <strong>Deadline:</strong> {taskPopup.deadline}
+            </p>
+            <p>
+              <strong>Priority:</strong> {taskPopup.priority}
+            </p>
+            <p>
+              <strong>Assigned By:</strong> {taskPopup.assigned_by_name}
+            </p>
           </div>
         )}
       </main>

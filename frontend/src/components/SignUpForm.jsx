@@ -29,6 +29,8 @@ const SignUpForm = ({ closeForm }) => {
   const toggleSignUpPasswordVisibility = () =>
     setIsSignUpPasswordVisible(!isSignUpPasswordVisible);
 
+  const validateEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
   const validateSignUpForm = (formData) => {
     let { name, email, password, role } = formData;
 
@@ -39,7 +41,7 @@ const SignUpForm = ({ closeForm }) => {
       toast.error("All fields are required!");
       return false;
     }
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+    if (!validateEmail.test(email)) {
       toast.error("Invalid email format!");
       return false;
     }
@@ -92,6 +94,7 @@ const SignUpForm = ({ closeForm }) => {
         {step === 1 ? (
           <>
             <h2>Add New User</h2>
+
             <div className="form-input-wrapper">
               <input
                 type="text"
@@ -99,13 +102,16 @@ const SignUpForm = ({ closeForm }) => {
                 className="form-input-field"
                 value={signUpFormData.name}
                 onChange={(e) =>
-                  setSignUpFormData({
-                    ...signUpFormData,
-                    name: e.target.value,
-                  })
+                  setSignUpFormData({ ...signUpFormData, name: e.target.value })
                 }
+                onBlur={() => {
+                  if (!signUpFormData.name.trim()) {
+                    toast.error("Name is required!");
+                  }
+                }}
               />
             </div>
+
             <div className="form-input-wrapper">
               <input
                 type="email"
@@ -118,8 +124,16 @@ const SignUpForm = ({ closeForm }) => {
                     email: e.target.value,
                   })
                 }
+                onBlur={() => {
+                  if (!signUpFormData.email.trim()) {
+                    toast.error("Email is required!");
+                  } else if (!validateEmail.test(signUpFormData.email)) {
+                    toast.error("Invalid email format!");
+                  }
+                }}
               />
             </div>
+
             <div className="form-input-wrapper">
               <input
                 type={isSignUpPasswordVisible ? "text" : "password"}
@@ -132,6 +146,13 @@ const SignUpForm = ({ closeForm }) => {
                     password: e.target.value,
                   })
                 }
+                onBlur={() => {
+                  if (!signUpFormData.password) {
+                    toast.error("Password is required!");
+                  } else if (signUpFormData.password.length < 8) {
+                    toast.error("Password must be at least 8 characters long!");
+                  }
+                }}
               />
               <span
                 className="password-toggle-icon"
@@ -140,19 +161,23 @@ const SignUpForm = ({ closeForm }) => {
                 {isSignUpPasswordVisible ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
+
             <div className="form-input-wrapper">
               <input
                 className="form-input-field"
                 value={signUpFormData.role}
                 onChange={(e) =>
-                  setSignUpFormData({
-                    ...signUpFormData,
-                    role: e.target.value,
-                  })
+                  setSignUpFormData({ ...signUpFormData, role: e.target.value })
                 }
+                onBlur={() => {
+                  if (!signUpFormData.role.trim()) {
+                    toast.error("Role is required!");
+                  }
+                }}
                 placeholder="Role"
               />
             </div>
+
             <button type="button" className="form-button" onClick={handleNext}>
               Next
             </button>
@@ -165,77 +190,37 @@ const SignUpForm = ({ closeForm }) => {
                 <label>
                   <input
                     type="checkbox"
-                    name="create_user"
-                    checked={permissions.create_user}
-                    onChange={handlePermissionChange}
+                    name="all"
+                    checked={Object.values(permissions).every(Boolean)}
+                    onChange={(e) => {
+                      const newState = Object.fromEntries(
+                        Object.entries(permissions).map(([key]) => [
+                          key,
+                          e.target.checked,
+                        ])
+                      );
+                      setPermissions(newState);
+                    }}
                   />
-                  Create User
+                  All
                 </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="get_users"
-                    checked={permissions.get_users}
-                    onChange={handlePermissionChange}
-                  />
-                  Get Users
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="update_user"
-                    checked={permissions.update_user}
-                    onChange={handlePermissionChange}
-                  />
-                  Update User
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="delete_user"
-                    checked={permissions.delete_user}
-                    onChange={handlePermissionChange}
-                  />
-                  Delete User
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="create_task"
-                    checked={permissions.create_task}
-                    onChange={handlePermissionChange}
-                  />
-                  Create Task
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="get_tasks"
-                    checked={permissions.get_tasks}
-                    onChange={handlePermissionChange}
-                  />
-                  Get Tasks
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="update_task"
-                    checked={permissions.update_task}
-                    onChange={handlePermissionChange}
-                  />
-                  Update Task
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="delete_task"
-                    checked={permissions.delete_task}
-                    onChange={handlePermissionChange}
-                  />
-                  Delete Task
-                </label>
+
+                {Object.entries(permissions).map(([key, value]) => (
+                  <label key={key}>
+                    <input
+                      type="checkbox"
+                      name={key}
+                      checked={value}
+                      onChange={handlePermissionChange}
+                    />
+                    {key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </label>
+                ))}
               </div>
             </div>
+
             <button
               type="submit"
               className="form-button"

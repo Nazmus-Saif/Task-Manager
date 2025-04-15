@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SideBarLayout from "../../components/SideBarLayout.jsx";
 import SignUpForm from "../../components/SignUpForm.jsx";
 import CreateTaskForm from "../../components/CreateTaskForm.jsx";
+import RolePermissions from "../../components/RolePermissions.jsx";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -38,8 +39,9 @@ const AdminDashboard = () => {
     getUpcomingDeadlines,
     isGettingUpcomingDeadlines,
   } = authController();
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [isCreateRoleFormOpen, setIsCreateRoleFormOpen] = useState(false);
+  const [isCreateUserFormOpen, setIsCreateUserFormOpen] = useState(false);
+  const [isCreateTaskFormOpen, setIsCreateTaskFormOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
@@ -150,19 +152,19 @@ const AdminDashboard = () => {
           <div className="nav-right">
             <button
               className="btn add-user-btn"
-              onClick={() => setIsFormOpen(true)}
+              onClick={() => setIsCreateRoleFormOpen(true)}
             >
               <MdAdd /> Create Role
             </button>
             <button
               className="btn add-user-btn"
-              onClick={() => setIsFormOpen(true)}
+              onClick={() => setIsCreateUserFormOpen(true)}
             >
               <MdAdd /> Add User
             </button>
             <button
               className="btn create-task-btn"
-              onClick={() => setIsTaskFormOpen(true)}
+              onClick={() => setIsCreateTaskFormOpen(true)}
             >
               <MdAdd /> Create Task
             </button>
@@ -210,35 +212,57 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        <div className={`form-container ${isFormOpen ? "active" : ""}`}>
+        <div
+          className={`form-container ${isCreateRoleFormOpen ? "active" : ""}`}
+        >
           <div
-            className={`form-overlay ${isFormOpen ? "active" : ""}`}
-            onClick={() => setIsFormOpen(false)}
+            className={`form-overlay ${isCreateRoleFormOpen ? "active" : ""}`}
+            onClick={() => setIsCreateRoleFormOpen(false)}
           ></div>
           <div className="form-wrapper">
             <button
               className="btn close-button"
-              onClick={() => setIsFormOpen(false)}
+              onClick={() => setIsCreateRoleFormOpen(false)}
             >
               &times;
             </button>
-            <SignUpForm closeForm={() => setIsFormOpen(false)} />
+            <RolePermissions />
           </div>
         </div>
 
-        <div className={`form-container ${isTaskFormOpen ? "active" : ""}`}>
+        <div
+          className={`form-container ${isCreateUserFormOpen ? "active" : ""}`}
+        >
           <div
-            className={`form-overlay ${isTaskFormOpen ? "active" : ""}`}
-            onClick={() => setIsTaskFormOpen(false)}
+            className={`form-overlay ${isCreateUserFormOpen ? "active" : ""}`}
+            onClick={() => setIsCreateUserFormOpen(false)}
           ></div>
           <div className="form-wrapper">
             <button
               className="btn close-button"
-              onClick={() => setIsTaskFormOpen(false)}
+              onClick={() => setIsCreateUserFormOpen(false)}
             >
               &times;
             </button>
-            <CreateTaskForm closeForm={() => setIsTaskFormOpen(false)} />
+            <SignUpForm closeForm={() => setIsCreateUserFormOpen(false)} />
+          </div>
+        </div>
+
+        <div
+          className={`form-container ${isCreateTaskFormOpen ? "active" : ""}`}
+        >
+          <div
+            className={`form-overlay ${isCreateTaskFormOpen ? "active" : ""}`}
+            onClick={() => setIsCreateTaskFormOpen(false)}
+          ></div>
+          <div className="form-wrapper">
+            <button
+              className="btn close-button"
+              onClick={() => setIsCreateTaskFormOpen(false)}
+            >
+              &times;
+            </button>
+            <CreateTaskForm closeForm={() => setIsCreateTaskFormOpen(false)} />
           </div>
         </div>
       </main>

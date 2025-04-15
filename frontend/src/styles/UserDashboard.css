@@ -314,6 +314,61 @@
     opacity: 0;
 }
 
+.task-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90%;
+    background: #2E373A;
+    color: #fff;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.task-popup h3 {
+    margin-bottom: 12px;
+    color: #ffb74d;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.task-popup p {
+    margin: 6px 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.task-popup .close-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+
 .chart-section {
     margin-top: 30px;
     text-align: center;

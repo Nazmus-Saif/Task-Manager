@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
+import toast from "react-hot-toast";
 import { authController } from "../controllers/authController.js";
 
 const CreateTaskForm = ({ closeForm }) => {
@@ -15,8 +16,30 @@ const CreateTaskForm = ({ closeForm }) => {
     getUsers();
   }, []);
 
+  const validateTaskForm = () => {
+    if (
+      !taskTitle.trim() ||
+      !taskDescription.trim() ||
+      !assignedTo ||
+      !deadline
+    ) {
+      toast.error("All fields are required!");
+      return false;
+    }
+
+    const selectedDate = new Date(deadline);
+    const now = new Date();
+    if (selectedDate < now) {
+      toast.error("Deadline must be a future date!");
+      return false;
+    }
+    return true;
+  };
+
   const handleTaskFormSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateTaskForm()) return;
 
     const priorityMap = {
       1: "low",
@@ -31,8 +54,8 @@ const CreateTaskForm = ({ closeForm }) => {
     };
 
     const taskData = {
-      title: taskTitle,
-      description: taskDescription,
+      title: taskTitle.trim(),
+      description: taskDescription.trim(),
       assigned_to: assignedTo,
       priority: priorityMap[priority],
       status: statusMap[status],
@@ -41,6 +64,7 @@ const CreateTaskForm = ({ closeForm }) => {
 
     await addTask(taskData);
 
+    // Reset form
     setTaskTitle("");
     setTaskDescription("");
     setAssignedTo("");
@@ -54,6 +78,7 @@ const CreateTaskForm = ({ closeForm }) => {
     <form onSubmit={handleTaskFormSubmit}>
       <div className="form-content">
         <h2>Create Task</h2>
+
         <div className="form-input-wrapper">
           <input
             type="text"
@@ -61,14 +86,22 @@ const CreateTaskForm = ({ closeForm }) => {
             className="form-input-field"
             value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}
+            onBlur={() => {
+              if (!taskTitle.trim()) toast.error("Task title is required!");
+            }}
           />
         </div>
+
         <div className="form-input-wrapper">
           <textarea
             placeholder="Description"
             className="form-input-field"
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
+            onBlur={() => {
+              if (!taskDescription.trim())
+                toast.error("Task description is required!");
+            }}
           ></textarea>
         </div>
 
@@ -77,6 +110,9 @@ const CreateTaskForm = ({ closeForm }) => {
             className="form-input-field"
             value={assignedTo}
             onChange={(e) => setAssignedTo(e.target.value)}
+            onBlur={() => {
+              if (!assignedTo) toast.error("Please select a user to assign.");
+            }}
           >
             <option value="">Select Users</option>
             {users.map((user) => (
@@ -93,9 +129,9 @@ const CreateTaskForm = ({ closeForm }) => {
             value={priority}
             onChange={(e) => setPriority(Number(e.target.value))}
           >
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
+            <option value={1}>Low</option>
+            <option value={2}>Medium</option>
+            <option value={3}>High</option>
           </select>
         </div>
 
@@ -105,10 +141,19 @@ const CreateTaskForm = ({ closeForm }) => {
             className="form-input-field"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
+            onBlur={() => {
+              if (!deadline) {
+                toast.error("Deadline is required!");
+              } else {
+                const d = new Date(deadline);
+                const today = new Date();
+                if (d < today) toast.error("Deadline must be in the future!");
+              }
+            }}
           />
         </div>
 
-        <button type="submit" className="form-button">
+        <button type="submit" className="form-button" disabled={isTaskAdded}>
           {isTaskAdded ? <FaSpinner className="loading-icon" /> : "Create Task"}
         </button>
       </div>
