@@ -29,17 +29,14 @@ class UserManagementSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             validated_data['password'] = make_password(
                 validated_data['password'])
-
-        if 'permissions' in validated_data:
-            existing_permissions = instance.permissions or {}
-            existing_permissions.update(validated_data['permissions'])
-            validated_data['permissions'] = existing_permissions
-
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation.pop('password', None)
+
+        # Add permissions from the related role
+        representation['permissions'] = instance.role.permissions if instance.role else {}
         return representation
 
 
@@ -54,8 +51,8 @@ class SignInSerializer(serializers.Serializer):
                 "id": instance.id,
                 "email": instance.email,
                 "name": instance.name,
-                "role": instance.role,
-                "permissions": instance.permissions,
+                "role": instance.role.name if instance.role else None,
+                "permissions": instance.role.permissions if instance.role else {},
                 "is_staff": instance.is_staff,
                 "is_superuser": instance.is_superuser,
                 "created_at": instance.created_at,

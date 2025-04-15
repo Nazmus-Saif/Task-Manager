@@ -25,7 +25,9 @@ class UsersManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('role', 'super_admin')
+        role = Roles.objects.get_or_create(name='super_admin')[0]
+        extra_fields.setdefault('role', role)
+
         return self.create_user(email, password, **extra_fields)
 
 
@@ -33,8 +35,7 @@ class Users(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     name = models.CharField(max_length=150)
-    role = models.CharField(max_length=50)
-    permissions = models.JSONField(default=dict)
+    role = models.ForeignKey(Roles, on_delete=models.CASCADE, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

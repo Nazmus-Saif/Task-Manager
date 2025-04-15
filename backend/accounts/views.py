@@ -152,10 +152,17 @@ class RoleListView(generics.ListAPIView):
 class UserManagementView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        if not HasPermission("create_user"):
-            return Response({"error": "You don't have permission to create a user."}, status=status.HTTP_403_FORBIDDEN)
+    def get_permissions(self):
+        action_permission_map = {
+            'POST': 'create_user',
+            'GET': 'get_users',
+            'PUT': 'update_user',
+            'DELETE': 'delete_user',
+        }
+        permission_key = action_permission_map.get(self.request.method)
+        return [IsAuthenticated(), HasPermission(permission_key)]
 
+    def post(self, request):
         serializer = UserManagementSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -163,19 +170,18 @@ class UserManagementView(APIView):
         return Response({"error": "Invalid data.", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        if not HasPermission("get_users"):
-            return Response({"error": "You don't have permission to view users."}, status=status.HTTP_403_FORBIDDEN)
-
         role = request.query_params.get("role")
-        users = Users.objects.filter(role=role).exclude(role="super_admin").order_by(
-            "id") if role else Users.objects.exclude(role="super_admin").order_by("id")
+        if role:
+            users = Users.objects.filter(role__name=role).exclude(
+                role__name="super_admin").order_by("id")
+        else:
+            users = Users.objects.exclude(
+                role__name="super_admin").order_by("id")
+
         serializer = UserManagementSerializer(users, many=True)
         return Response({"message": "Users fetched successfully.", "users": serializer.data}, status=status.HTTP_200_OK)
 
     def put(self, request, user_id):
-        if not HasPermission("update_user"):
-            return Response({"error": "You don't have permission to update users."}, status=status.HTTP_403_FORBIDDEN)
-
         user = Users.objects.filter(id=user_id).first()
         if not user:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -188,9 +194,6 @@ class UserManagementView(APIView):
         return Response({"error": "Invalid data.", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, user_id):
-        if not HasPermission("delete_user"):
-            return Response({"error": "You don't have permission to delete users."}, status=status.HTTP_403_FORBIDDEN)
-
         user = Users.objects.filter(id=user_id).first()
         if not user:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)

@@ -64,7 +64,6 @@ const CreateTaskForm = ({ closeForm }) => {
 
     await addTask(taskData);
 
-    // Reset form
     setTaskTitle("");
     setTaskDescription("");
     setAssignedTo("");
