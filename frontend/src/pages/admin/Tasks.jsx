@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import AdminSideBar from "../../components/AdminSideBar.jsx";
 import { authController } from "../../controllers/authController.js";
 
 const Tasks = () => {
-  const {
-    authorizedUser,
-    getTasks,
-    tasks,
-    isTaskFetching,
-    updateTask,
-    deleteTask,
-  } = authController();
+  const { getTasks, tasks, isTaskFetching, updateTask, deleteTask } =
+    authController();
   const [searchTerm, setSearchTerm] = useState("");
   const [editingTask, setEditingTask] = useState(null);
   const [formData, setFormData] = useState({
@@ -99,7 +93,7 @@ const Tasks = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <AdminSideBar />
       <main className="main-content">
         <header className="top-nav">
           <h1>Tasks</h1>

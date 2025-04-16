@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Loader } from "lucide-react";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import UsersSideBar from "../../components/UsersSideBar.jsx";
 import { authController } from "../../controllers/authController.js";
 
 const Notifications = () => {
@@ -14,13 +14,12 @@ const Notifications = () => {
   useEffect(() => {
     if (authorizedUser?.data?.id) {
       getNotifications(authorizedUser.data.id);
-      console.log(notifications);
     }
   }, [authorizedUser, getNotifications]);
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <UsersSideBar />
       <main className="main-content">
         <header className="top-nav">
           <h1>Notifications</h1>

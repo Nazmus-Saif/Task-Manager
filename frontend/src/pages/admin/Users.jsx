@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
-import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import {
+  MdSearch,
+  MdEdit,
+  MdDelete,
+  MdNotificationsActive,
+} from "react-icons/md";
+import AdminSideBar from "../../components/AdminSideBar.jsx";
 import { authController } from "../../controllers/authController.js";
 
 const Users = () => {
   const {
-    authorizedUser,
     getUsers,
     users,
     isUserFetching,
@@ -14,14 +18,22 @@ const Users = () => {
     deleteUser,
     isUserUpdating,
     isUserDeleting,
+    sendAlert,
   } = authController();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [editingUser, setEditingUser] = useState(null);
+  const [alertingUser, setAlertingUser] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     role: "",
+  });
+
+  const [alertFormData, setAlertFormData] = useState({
+    message: "",
+    deliveryMethod: "in-app",
   });
 
   useEffect(() => {
@@ -34,6 +46,14 @@ const Users = () => {
       name: user.name,
       email: user.email,
       role: user.role,
+    });
+  };
+
+  const handleAlert = (user) => {
+    setAlertingUser(user);
+    setAlertFormData({
+      message: "",
+      deliveryMethod: "in-app",
     });
   };
 
@@ -57,13 +77,30 @@ const Users = () => {
     setEditingUser(null);
   };
 
+  const handleAlertFormSubmit = async (e) => {
+    e.preventDefault();
+    const alertData = {
+      message: alertFormData.message,
+      delivery_type: alertFormData.deliveryMethod,
+    };
+
+    await sendAlert(alertingUser.id, alertData);
+
+    setAlertingUser(null);
+    setAlertFormData({
+      message: "",
+      deliveryMethod: "in-app",
+    });
+  };
+
   const handleCancel = () => {
     setEditingUser(null);
+    setAlertingUser(null);
   };
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <AdminSideBar />
 
       <main className="main-content">
         <header className="top-nav">
@@ -137,6 +174,54 @@ const Users = () => {
                 </div>
               </form>
             </div>
+          ) : alertingUser ? (
+            <div className="edit-form-container">
+              <h2>Send Alert to {alertingUser.name}</h2>
+              <form onSubmit={handleAlertFormSubmit} className="edit-form">
+                <div className="input-group">
+                  <label>Message:</label>
+                  <textarea
+                    rows="4"
+                    value={alertFormData.message}
+                    onChange={(e) =>
+                      setAlertFormData({
+                        ...alertFormData,
+                        message: e.target.value,
+                      })
+                    }
+                    placeholder="Type your alert message here..."
+                  />
+                </div>
+                <div className="input-group">
+                  <label>Delivery Method:</label>
+                  <select
+                    value={alertFormData.deliveryMethod}
+                    onChange={(e) =>
+                      setAlertFormData({
+                        ...alertFormData,
+                        deliveryMethod: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="in-app">In-App Only</option>
+                    <option value="email">Email Only</option>
+                    <option value="both">Both In-App and Email</option>
+                  </select>
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="save-btn">
+                    Send Alert
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           ) : (
             <table className="task-table">
               <thead>
@@ -176,6 +261,12 @@ const Users = () => {
                               <MdDelete /> Delete
                             </>
                           )}
+                        </button>
+                        <button
+                          className="btn alert-btn"
+                          onClick={() => handleAlert(user)}
+                        >
+                          <MdNotificationsActive /> Alert
                         </button>
                       </td>
                     </tr>

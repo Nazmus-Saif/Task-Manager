@@ -13,7 +13,7 @@
     height: 100dvh;
     width: 100%;
     display: grid;
-    grid-template-columns: 17rem auto;
+    grid-template-columns: 15rem auto;
     background: var(--background-color);
     color: var(--text-dark);
 }
@@ -368,17 +368,41 @@
     }
 }
 
-
 .chart-section {
-    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 1.6rem;
+    height: 310px;
     text-align: center;
 }
 
+.chart-section h3 {
+    font-size: 1.2rem;
+}
+
 .chart-container {
-    height: 250px;
+    height: 310px;
     width: 100%;
-    margin: 0 auto;
     margin-top: 30px;
+    background: var(--background-color);
+    border-radius: 1rem;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+    padding-top: 1.5rem;
+}
+
+.custom-tooltip-content {
+    background-color: #202528;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-title {
+    font-weight: 600;
+    margin-bottom: 2px;
 }
 
 .task-section {
@@ -442,6 +466,18 @@ td {
 
 .delete-btn {
     background: #FF4742;
+}
+
+.alert-btn {
+    background-color: #e67e22;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.alert-btn:hover {
+    background-color: #d35400;
 }
 
 .pending-btn {

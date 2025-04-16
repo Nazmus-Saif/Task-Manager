@@ -15,7 +15,7 @@ from notifications.utils import (send_task_assigned_email, save_notification,
 @permission_classes([IsAuthenticated])
 def create_task(request):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("create_task", False)):
+        if not (request.user.is_superuser or request.user.role.permissions.get("create_task", False)):
             return Response({"error": "You don't have permission to create a task."}, status=status.HTTP_403_FORBIDDEN)
 
         assigned_user = Users.objects.filter(
@@ -47,7 +47,7 @@ def create_task(request):
 @permission_classes([IsAuthenticated])
 def get_tasks(request):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+        if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
             return Response({"error": "You don't have permission to view tasks."}, status=status.HTTP_403_FORBIDDEN)
 
         tasks = Tasks.objects.all() if request.user.is_superuser else Tasks.objects.filter(
@@ -66,7 +66,7 @@ def get_tasks(request):
 @permission_classes([IsAuthenticated])
 def get_user_tasks(request, user_id):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+        if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
             return Response({"error": "You don't have permission to view tasks."}, status=status.HTTP_403_FORBIDDEN)
 
         tasks = Tasks.objects.filter(assigned_to=user_id)
@@ -85,7 +85,7 @@ def get_user_tasks(request, user_id):
 @permission_classes([IsAuthenticated])
 def edit_task(request, task_id):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("update_task", False)):
+        if not (request.user.is_superuser or request.user.role.permissions.get("update_task", False)):
             return Response({"error": "You don't have permission to edit this task."}, status=status.HTTP_403_FORBIDDEN)
 
         task = Tasks.objects.filter(id=task_id).first()
@@ -119,7 +119,7 @@ def edit_task(request, task_id):
 @permission_classes([IsAuthenticated])
 def delete_task(request, task_id):
     try:
-        if not (request.user.is_superuser or request.user.permissions.get("delete_task", False)):
+        if not (request.user.is_superuser or request.user.role.permissions.get("delete_task", False)):
             return Response({"error": "You don't have permission to delete this task."}, status=status.HTTP_403_FORBIDDEN)
 
         task = Tasks.objects.filter(id=task_id).first()
@@ -135,7 +135,7 @@ def delete_task(request, task_id):
 class CountView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+            if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
                 return Response({"error": "You don't have permission to read this counts."}, status=status.HTTP_403_FORBIDDEN)
 
             total_roles = Users.objects.values('role').distinct().count()
@@ -160,7 +160,7 @@ class CountView(APIView):
 class UserTaskCountView(APIView):
     def get(self, request, user_id, *args, **kwargs):
         try:
-            if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+            if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
                 return Response({"error": "You don't have permission to view task counts."}, status=status.HTTP_403_FORBIDDEN)
 
             user_tasks = Tasks.objects.filter(assigned_to=user_id)
@@ -189,7 +189,7 @@ class UserTaskCountView(APIView):
 class StatusCountView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+            if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
                 return Response({"error": "You don't have permission to get this counts."}, status=status.HTTP_403_FORBIDDEN)
 
             pending_count = Tasks.objects.filter(status='pending').count()
@@ -215,12 +215,12 @@ class StatusCountView(APIView):
 class UpcomingDeadlinesView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            if not (request.user.is_superuser or request.user.permissions.get("get_tasks", False)):
+            if not (request.user.is_superuser or request.user.role.permissions.get("get_tasks", False)):
                 return Response({"error": "You don't have permission to read upcoming deadlines."}, status=status.HTTP_403_FORBIDDEN)
 
             today = now().date()
             upcoming_tasks = Tasks.objects.filter(
-                deadline__gte=today).order_by('deadline')[:10]
+                deadline__gte=today).order_by('deadline')[:5]
 
             serializer = CreateTaskSerializer(upcoming_tasks, many=True)
 

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            padding: 20px;
+        }
+
+        .alert-message {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-message h3 {
+            margin-top: 0;
+        }
+
+        .alert-footer {
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="alert-message">
+        <h3>Hello {{ user.name }},</h3>
+        <p>{{ message }}</p>
+    </div>
+
+    <div class="alert-footer">
+        <p>Delivery Method: {{ delivery_method }}</p>
+    </div>
+
+    {% if delivery_method == "in-app" %}
+    <p>This message will be shown in your dashboard.</p>
+    {% elif delivery_method == "email" %}
+    <p>We've sent this message to your email.</p>
+    {% else %}
+    <p>This message will be shown in-app and has also been sent to your email.</p>
+    {% endif %}
+</body>
+
+</html>

@@ -13,10 +13,12 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { fullTitle, deadline, priority } = payload[0].payload;
     return (
-      <div className="bg-[#374045] text-white p-2 rounded-md shadow-md text-sm">
-        <p className="font-semibold">{fullTitle}</p>
-        <p>Deadline: {deadline}</p>
-        <p>Priority: {priority}</p>
+      <div className="custom-tooltip-wrapper">
+        <div className="custom-tooltip-content">
+          <p className="tooltip-title">{fullTitle}</p>
+          <p>Deadline: {deadline}</p>
+          <p>Priority: {priority}</p>
+        </div>
       </div>
     );
   }
@@ -39,8 +41,7 @@ const UpcomingDeadlinesChart = ({ data }) => {
 
   return (
     <div className="">
-      <h2 className="">Upcoming Task Deadlines</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250}>
         <BarChart
           data={chartData}
           margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
@@ -54,7 +55,12 @@ const UpcomingDeadlinesChart = ({ data }) => {
             ticks={[0, 1, 2, 3]}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="priority" fill="#D6792C" barSize={30} />
+          <Bar
+            dataKey="priority"
+            fill="#D6792C"
+            barSize={50}
+            activeBar={{ fill: "#D6792C", stroke: "none", strokeWidth: 0 }}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

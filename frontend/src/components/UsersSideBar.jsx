@@ -2,24 +2,15 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   MdSpaceDashboard,
-  MdPeopleAlt,
-  MdWork,
-  MdLogout,
-  MdNotifications,
   MdAssessment,
+  MdNotifications,
+  MdLogout,
 } from "react-icons/md";
 import { authController } from "../controllers/authController.js";
 
-const SideBar = () => {
+const UserSideBar = () => {
   const { authorizedUser, signOut } = authController();
-  const [role, setRole] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
-
-  useEffect(() => {
-    if (authorizedUser) {
-      setRole(authorizedUser.data.role);
-    }
-  }, [authorizedUser]);
 
   useEffect(() => {
     if (authorizedUser?.data?.id) {
@@ -40,50 +31,28 @@ const SideBar = () => {
     }
   }, [authorizedUser]);
 
-  const sidebarData = {
-    super_admin: [
-      {
-        to: "/super-admin/dashboard",
-        icon: <MdSpaceDashboard />,
-        label: "Dashboard",
-      },
-      {
-        to: "/super-admin/users",
-        icon: <MdPeopleAlt />,
-        label: "Users",
-      },
-      {
-        to: "/super-admin/tasks",
-        icon: <MdWork />,
-        label: "Tasks",
-      },
-    ],
-    user: [
-      {
-        to: "/user/dashboard",
-        icon: <MdSpaceDashboard />,
-        label: "Dashboard",
-      },
-      {
-        to: "/user/my-tasks",
-        icon: <MdAssessment />,
-        label: "My Tasks",
-      },
-      {
-        to: "/user/notifications",
-        icon: <MdNotifications />,
-        label: "Notifications",
-        notificationCount: notificationCount,
-      },
-    ],
-  };
-
-  const links =
-    role === "super_admin" ? sidebarData.super_admin : sidebarData.user;
-
   const handleNotificationClick = () => {
     setNotificationCount(0);
   };
+
+  const links = [
+    {
+      to: "/user/dashboard",
+      icon: <MdSpaceDashboard />,
+      label: "Dashboard",
+    },
+    {
+      to: "/user/my-tasks",
+      icon: <MdAssessment />,
+      label: "My Tasks",
+    },
+    {
+      to: "/user/notifications",
+      icon: <MdNotifications />,
+      label: "Notifications",
+      notificationCount,
+    },
+  ];
 
   return (
     <aside className="sidebar">
@@ -125,4 +94,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default UserSideBar;

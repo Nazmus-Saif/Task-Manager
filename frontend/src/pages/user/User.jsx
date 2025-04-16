@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdAdd } from "react-icons/md";
 import { MdAssignment, MdCheckCircle, MdPendingActions } from "react-icons/md";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import UsersSideBar from "../../components/UsersSideBar.jsx";
 import SignUpForm from "../../components/SignUpForm.jsx";
 import CreateTaskForm from "../../components/CreateTaskForm.jsx";
 import { authController } from "../../controllers/authController.js";
@@ -74,10 +74,10 @@ const User = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <UsersSideBar />
       <main className="main-content">
         <header className="top-nav">
-          <h1>Welcome {authorizedUser?.data.name}</h1>
+          <h1>Hey, {authorizedUser?.data.name}</h1>
           <div className="nav-right">
             {canCreateUser && (
               <button
@@ -178,7 +178,7 @@ const User = () => {
           </div>
         )}
 
-        {newMessage && (
+        {newMessage && taskPopup && (
           <div className="task-popup">
             <button
               className="close-btn"

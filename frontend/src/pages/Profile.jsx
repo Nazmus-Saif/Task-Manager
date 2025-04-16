@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { FiUser, FiMail, FiCamera } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
-import SideBarLayout from "../components/SideBarLayout.jsx";
+import AdminSideBar from "../components/AdminSideBar.jsx";
+import UsersSideBar from "../components/UsersSideBar.jsx";
+
 import { authController } from "../controllers/authController.js";
 
 const ProfilePage = () => {
@@ -30,7 +32,11 @@ const ProfilePage = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      {authorizedUser?.data.role === "super_admin" ? (
+        <AdminSideBar />
+      ) : (
+        <UsersSideBar />
+      )}
       <main className="profile-page-container">
         <div className="profile-container">
           <div className="profile-header">

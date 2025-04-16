@@ -1,31 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { MdAdd, MdBusiness, MdWork, MdPeople } from "react-icons/md";
 import { Link } from "react-router-dom";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import AdminSideBar from "../../components/AdminSideBar.jsx";
 import SignUpForm from "../../components/SignUpForm.jsx";
 import CreateTaskForm from "../../components/CreateTaskForm.jsx";
 import RolePermissionsForm from "../../components/RolePermissions.jsx";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  ChartDataLabels
-);
-import DataVisualization from "../../components/DataVisualization.jsx";
+import DeadlinesChart from "../../components/DeadlinesChart.jsx";
+import TaskStatusChart from "../../components/TaskStatusChart.jsx";
+import FloatingForm from "../../components/FloatingForm.jsx";
 import { authController } from "../../controllers/authController.js";
 
 const AdminDashboard = () => {
@@ -39,6 +21,7 @@ const AdminDashboard = () => {
     getUpcomingDeadlines,
     isGettingUpcomingDeadlines,
   } = authController();
+
   const [isCreateRoleFormOpen, setIsCreateRoleFormOpen] = useState(false);
   const [isCreateUserFormOpen, setIsCreateUserFormOpen] = useState(false);
   const [isCreateTaskFormOpen, setIsCreateTaskFormOpen] = useState(false);
@@ -72,83 +55,13 @@ const AdminDashboard = () => {
     }
   }, [authorizedUser]);
 
-  const data = {
-    labels: ["Complete", "Pending", "In Progress"],
-    datasets: [
-      {
-        label: "Tasks",
-        data: [
-          statusCounts?.completed,
-          statusCounts?.pending,
-          statusCounts?.inProgress,
-        ],
-        backgroundColor: ["#28A745", "#DC3545", "#F39C12"],
-      },
-    ],
-  };
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (tooltipItem) {
-            return tooltipItem.label + ": " + tooltipItem.raw + " tasks";
-          },
-        },
-      },
-      datalabels: {
-        anchor: "end",
-        align: "top",
-        formatter: (value) => value,
-        font: {
-          weight: "bold",
-          size: 14,
-        },
-        color: "#e0e0e0",
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: "#e0e0e0",
-          font: {
-            size: 14,
-            weight: "bold",
-          },
-        },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        min: 0,
-        max: 50,
-        ticks: {
-          color: "#e0e0e0",
-          font: {
-            size: 12,
-          },
-        },
-        grid: {
-          color: "rgba(255, 255, 255, 0.1)",
-          display: false,
-        },
-      },
-    },
-  };
-
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <AdminSideBar />
 
       <main className="main-content">
         <header className="top-nav">
-          <h1>Welcome {authorizedUser?.data.name}</h1>
+          <h1>Hey, {authorizedUser?.data.name}</h1>
           <div className="nav-right">
             <button
               className="btn add-user-btn"
@@ -201,71 +114,42 @@ const AdminDashboard = () => {
         </section>
 
         <section className="chart-section">
-          <h2>Task Completion Status</h2>
           <div className="chart-container">
-            <Bar data={data} options={options} />
+            <h3>Task Completion Status</h3>
+            <TaskStatusChart statusCounts={statusCounts} />
           </div>
+
           <div className="chart-container">
+            <h3>Upcoming Task Deadlines</h3>
             {!isGettingUpcomingDeadlines && upcomingDeadlines?.length > 0 && (
-              <DataVisualization data={upcomingDeadlines} />
+              <DeadlinesChart data={upcomingDeadlines} />
             )}
           </div>
         </section>
 
-        <div
-          className={`form-container ${isCreateRoleFormOpen ? "active" : ""}`}
+        {/* Floating Forms */}
+        <FloatingForm
+          isOpen={isCreateRoleFormOpen}
+          onClose={() => setIsCreateRoleFormOpen(false)}
         >
-          <div
-            className={`form-overlay ${isCreateRoleFormOpen ? "active" : ""}`}
-            onClick={() => setIsCreateRoleFormOpen(false)}
-          ></div>
-          <div className="form-wrapper">
-            <button
-              className="btn close-button"
-              onClick={() => setIsCreateRoleFormOpen(false)}
-            >
-              &times;
-            </button>
-            <RolePermissionsForm />
-          </div>
-        </div>
+          <RolePermissionsForm />
+        </FloatingForm>
 
-        <div
-          className={`form-container ${isCreateUserFormOpen ? "active" : ""}`}
+        <FloatingForm
+          isOpen={isCreateUserFormOpen}
+          onClose={() => setIsCreateUserFormOpen(false)}
         >
-          <div
-            className={`form-overlay ${isCreateUserFormOpen ? "active" : ""}`}
-            onClick={() => setIsCreateUserFormOpen(false)}
-          ></div>
-          <div className="form-wrapper">
-            <button
-              className="btn close-button"
-              onClick={() => setIsCreateUserFormOpen(false)}
-            >
-              &times;
-            </button>
-            <SignUpForm closeForm={() => setIsCreateUserFormOpen(false)} />
-          </div>
-        </div>
+          <SignUpForm closeForm={() => setIsCreateUserFormOpen(false)} />
+        </FloatingForm>
 
-        <div
-          className={`form-container ${isCreateTaskFormOpen ? "active" : ""}`}
+        <FloatingForm
+          isOpen={isCreateTaskFormOpen}
+          onClose={() => setIsCreateTaskFormOpen(false)}
         >
-          <div
-            className={`form-overlay ${isCreateTaskFormOpen ? "active" : ""}`}
-            onClick={() => setIsCreateTaskFormOpen(false)}
-          ></div>
-          <div className="form-wrapper">
-            <button
-              className="btn close-button"
-              onClick={() => setIsCreateTaskFormOpen(false)}
-            >
-              &times;
-            </button>
-            <CreateTaskForm closeForm={() => setIsCreateTaskFormOpen(false)} />
-          </div>
-        </div>
+          <CreateTaskForm closeForm={() => setIsCreateTaskFormOpen(false)} />
+        </FloatingForm>
       </main>
+
       {newMessage && (
         <div className="new-message-notification">
           <p>{newMessage}</p>

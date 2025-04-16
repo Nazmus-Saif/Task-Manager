@@ -33,6 +33,7 @@ export const authController = create((set, get) => ({
   isGettingUpcomingDeadlines: false,
   userTasksCounts: null,
   isGettingUserTasksCounts: false,
+  isSendingAlert: false,
   notifications: [],
   isGettingNotifications: false,
   socket: null,
@@ -270,6 +271,20 @@ export const authController = create((set, get) => ({
       toast.error(error.response?.data?.error);
     } finally {
       set({ isGettingUserTask: false });
+    }
+  },
+
+  sendAlert: async (userId, data) => {
+    set({ isSendingAlert: true });
+    try {
+      const res = await axiosInstance.post(`users/send-alert/${userId}/`, data);
+      if (res.data) {
+        toast.success("Alert sent successfully!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    } finally {
+      set({ isSendingAlert: false });
     }
   },
 

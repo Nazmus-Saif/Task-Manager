@@ -23,6 +23,26 @@ textarea {
     outline: none;
 }
 
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg fill="white" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1.5rem;
+}
+
+input[type="date"] {
+    color-scheme: #e0e0e0;
+    padding-right: 0.5rem;
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
 *::-webkit-scrollbar {
     display: none;
 }
@@ -83,3 +103,31 @@ textarea {
 .global-loading-state h1 span {
     margin-left: 10px;
 }
+
+.shimmer {
+    background: #202528;
+    padding: 1rem;
+  }
+  .shimmer-block {
+    background: linear-gradient(
+      90deg,
+      #2c2f33 25%,
+      #3a3e42 50%,
+      #2c2f33 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  

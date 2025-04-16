@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { MdSearch, MdEdit, MdDelete } from "react-icons/md";
-import SideBarLayout from "../../components/SideBarLayout.jsx";
+import UsersSideBar from "../../components/UsersSideBar.jsx";
 import { authController } from "../../controllers/authController.js";
 
 const MyTasks = () => {
   const {
-    authorizedUser,
     getTasks,
     tasks,
     isTaskFetching,
@@ -95,7 +94,7 @@ const MyTasks = () => {
 
   return (
     <section className="dashboard-container">
-      <SideBarLayout role={authorizedUser?.data.role} />
+      <UsersSideBar />
       <main className="main-content">
         <header className="top-nav">
           <h1>My Tasks</h1>
