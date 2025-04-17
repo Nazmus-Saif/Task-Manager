@@ -94,7 +94,7 @@ const SuperAdmin = () => {
           </header>
 
           <section className="dashboard-metrics">
-            <div className="metric-card">
+            <div className="metric-card metric-card-1">
               <MdBusiness />
               <div className="metric-details">
                 <h3>Total Roles</h3>
@@ -102,7 +102,7 @@ const SuperAdmin = () => {
               </div>
             </div>
 
-            <div className="metric-card">
+            <div className="metric-card metric-card-2">
               <MdPeople />
               <div className="metric-details">
                 <h3>Total Users</h3>
@@ -110,7 +110,7 @@ const SuperAdmin = () => {
               </div>
             </div>
 
-            <div className="metric-card">
+            <div className="metric-card metric-card-3">
               <MdWork />
               <div className="metric-details">
                 <h3>Total Tasks</h3>

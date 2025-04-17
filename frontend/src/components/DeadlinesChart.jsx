@@ -57,9 +57,9 @@ const UpcomingDeadlinesChart = ({ data }) => {
           <Tooltip content={<CustomTooltip />} />
           <Bar
             dataKey="priority"
-            fill="#D6792C"
+            fill="	#a9dfd8"
             barSize={50}
-            activeBar={{ fill: "#D6792C", stroke: "none", strokeWidth: 0 }}
+            activeBar={{ fill: "	#a9dfd8", stroke: "none", strokeWidth: 0 }}
           />
         </BarChart>
       </ResponsiveContainer>

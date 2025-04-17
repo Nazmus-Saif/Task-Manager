@@ -7,6 +7,22 @@
     --text-dark: #edeffd;
     --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
     --transition-1: 0.25s ease;
+
+
+    --clr-primary: #171821;
+    --clr-secondary: #21222d;
+    --clr-light-green: #a9dfd8;
+    --clr-gray-200: #e8e8e8;
+    --clr-gray-300: #d2d2d2;
+    --clr-gray-400: #a0a0a0;
+    --clr-gray-500: #87888c;
+    --clr-gray-800: #2c2d33;
+    --clr-yellow-400: #fcb859;
+    --clr-yellow-500: #feb95a;
+    --clr-pink: #f2c8ed;
+    --clr-light-blue: #20aef3;
+    --clr-black: #000;
+    ---clr-white: #fff;
 }
 
 .dashboard-container {
@@ -55,16 +71,28 @@
     align-items: center;
     gap: 0.8rem;
     padding: 1rem;
-    color: var(--text-light);
+    color: #87888C;
     width: 100%;
     border-radius: 8px;
     transition: var(--transition-1);
 }
 
-.sidebar-link:hover,
 .sidebar-link.active {
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--background-color);
+    background-color: #a9dfd8;
+}
+
+.sidebar-link:hover {
+    cursor: pointer;
+    color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link.active:hover {
+    color: var(--background-color);
+    background-color: #a9dfd8;
+    cursor: pointer;
 }
 
 .main-content {
@@ -96,8 +124,19 @@
 
 .metric-card svg {
     font-size: 5rem;
-    color: #f4a261;
     border-radius: 10px;
+}
+
+.metric-card-1 svg {
+    color: #E6A54A;
+}
+
+.metric-card-2 svg {
+    color: #40A5D8;
+}
+
+.metric-card-3 svg {
+    color: #E68AA1;
 }
 
 .metric-details {
@@ -384,7 +423,7 @@
     height: 310px;
     width: 100%;
     margin-top: 30px;
-    background: var(--background-color);
+    background-color: var(--background-color);
     border-radius: 1rem;
     box-shadow: var(--box-shadow);
     transition: transform 0.3s ease;
@@ -490,7 +529,8 @@ td {
 .alert-btn,
 .create-role-btn,
 .add-user-btn,
-.create-task-btn {
+.create-task-btn,
+.close-button {
     display: flex;
     align-items: center;
 }
@@ -515,6 +555,7 @@ td {
     color: #bbbbbb;
 }
 
+.create-role-btn,
 .add-user-btn,
 .create-task-btn {
     margin-top: 2px;
