@@ -426,7 +426,6 @@ th,
 td {
     padding: 12px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 th {
@@ -450,8 +449,6 @@ td {
     cursor: pointer;
     border: none;
     transition: 0.3s ease;
-    display: flex;
-    align-items: center;
     gap: 6px;
     color: black;
 }
@@ -470,14 +467,10 @@ td {
 
 .alert-btn {
     background-color: #e67e22;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: bold;
 }
 
 .alert-btn:hover {
-    background-color: #d35400;
+    background-color: #f16f17;
 }
 
 .pending-btn {
@@ -490,6 +483,16 @@ td {
 
 .completed-btn {
     background: #4CAF50;
+}
+
+.edit-btn,
+.delete-btn,
+.alert-btn,
+.create-role-btn,
+.add-user-btn,
+.create-task-btn {
+    display: flex;
+    align-items: center;
 }
 
 .input-wrapper {

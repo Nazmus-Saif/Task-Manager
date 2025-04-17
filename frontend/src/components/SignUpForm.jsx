@@ -15,8 +15,7 @@ const SignUpForm = ({ closeForm }) => {
 
   useEffect(() => {
     getRoles();
-    console.log(roles);
-  }, []);
+  }, [getRoles]);
 
   const toggleSignUpPasswordVisibility = () =>
     setIsSignUpPasswordVisible(!isSignUpPasswordVisible);
@@ -127,7 +126,11 @@ const SignUpForm = ({ closeForm }) => {
             className="password-toggle-icon"
             onClick={toggleSignUpPasswordVisibility}
           >
-            {isSignUpPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+            {isSignUpPasswordVisible ? (
+              <FaEyeSlash className="eye-icon" />
+            ) : (
+              <FaEye className="eye-icon" />
+            )}
           </span>
         </div>
 

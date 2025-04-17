@@ -14,7 +14,7 @@ const CreateTaskForm = ({ closeForm }) => {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [getUsers]);
 
   const validateTaskForm = () => {
     if (

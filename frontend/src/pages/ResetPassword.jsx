@@ -22,7 +22,7 @@ const ResetPasswordPage = () => {
     }
     await resetPassword(token, password);
     setTimeout(() => {
-      navigate("/access");
+      navigate("/user/signin");
     }, 2000);
   };
 

@@ -75,12 +75,15 @@
 
 .password-toggle-icon {
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
-  font-size: 1.2rem;
   transform: translateY(-40%);
   cursor: pointer;
   color: #bbb;
+}
+
+.eye-icon {
+  font-size: 1.2rem !important;
 }
 
 .permissions-label {
