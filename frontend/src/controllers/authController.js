@@ -89,6 +89,23 @@ export const authController = create((set, get) => ({
     }
   },
 
+  googleSignIn: async (credential) => {
+    set({ isSigningIn: true });
+    try {
+      const res = await axiosInstance.post("users/google-signin/", {
+        credential: credential,
+      });
+      if (res.data) {
+        set({ authorizedUser: res.data });
+        toast.success("Signed in successfully!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+    } finally {
+      set({ isSigningIn: false });
+    }
+  },
+
   signOut: async () => {
     try {
       await axiosInstance.post("users/sign-out/");

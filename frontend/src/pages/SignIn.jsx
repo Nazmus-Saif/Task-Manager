@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { authController } from "../controllers/authController.js";
+import { GoogleLogin } from "@react-oauth/google";
 
 const SignInPage = () => {
-  const { signIn, isSigningIn } = authController();
+  const { signIn, googleSignIn, isSigningIn } = authController();
   const [signInFormData, setSignInFormData] = useState({
     email: "",
     password: "",
@@ -45,6 +46,11 @@ const SignInPage = () => {
       signIn(signInFormData);
     }
   };
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    await googleSignIn(credentialResponse.credential);
+  };
+
   return (
     <main className="signin-page">
       <div className="signin-card">
@@ -104,7 +110,11 @@ const SignInPage = () => {
               <span>or</span>
             </div>
             <div className="social-signin-wrapper">
-              <Link className="social-signin">Continue with Google</Link>
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                disabled={isSigningIn}
+                style={{ display: "none" }}
+              />
             </div>
           </div>
         </form>

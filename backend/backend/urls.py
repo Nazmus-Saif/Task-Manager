@@ -6,4 +6,5 @@ urlpatterns = [
     path("api/", include("accounts.urls")),
     path("api/", include("tasks.urls")),
     path("api/", include("notifications.urls")),
+    path('api/', include('social_django.urls', namespace='social')),
 ]

@@ -34,7 +34,6 @@ class UserManagementSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation.pop('password', None)
-
         representation['permissions'] = instance.role.permissions
         return representation
 
@@ -46,19 +45,23 @@ class SignInSerializer(serializers.Serializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if isinstance(instance, Users):
-            data = {
-                "id": instance.id,
-                "email": instance.email,
-                "name": instance.name,
-                "role": instance.role.name,
-                "permissions": instance.role.permissions,
-                "is_staff": instance.is_staff,
-                "is_superuser": instance.is_superuser,
-                "created_at": instance.created_at,
-                "updated_at": instance.updated_at,
-            }
-            representation.update(data)
+            extra_data = self.get_user_data(instance)
+            representation.update(extra_data)
         return representation
+
+    @staticmethod
+    def get_user_data(instance):
+        return {
+            "id": instance.id,
+            "email": instance.email,
+            "name": instance.name,
+            "role": instance.role.name,
+            "permissions": instance.role.permissions,
+            "is_staff": instance.is_staff,
+            "is_superuser": instance.is_superuser,
+            "created_at": instance.created_at,
+            "updated_at": instance.updated_at,
+        }
 
 
 class ResetPasswordSerializer(serializers.Serializer):

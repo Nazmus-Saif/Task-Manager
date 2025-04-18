@@ -1,21 +1,58 @@
-from .serializers import RolesSerializer
-from .models import Roles
-from rest_framework import status, generics
-from .models import PasswordResetToken
+from datetime import datetime
+import uuid
+
 from django.conf import settings
 from django.core.mail import send_mail
-import uuid
 from django.utils.timezone import now
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserManagementSerializer, SignInSerializer, ResetPasswordSerializer
-from .models import Users
-from rest_framework import status
+from django.contrib.auth.hashers import check_password
+
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.contrib.auth.hashers import check_password
-from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.views import APIView
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from google.oauth2 import id_token
+from google.auth.transport.requests import Request
+
+from .models import Roles, Users, PasswordResetToken
+from .serializers import (
+    RolesSerializer,
+    UserManagementSerializer,
+    SignInSerializer,
+    ResetPasswordSerializer
+)
+
 from backend.permission import HasPermission
+
+
+def set_tokens_in_cookies(user, response: Response):
+    try:
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            max_age=3600 * 24,
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            max_age=3600 * 24 * 7,
+        )
+        return response
+    except Exception as e:
+        raise Exception(f"Error setting tokens in cookies: {str(e)}")
 
 
 class TokenRefresh(TokenRefreshView):
@@ -52,17 +89,7 @@ class CheckAuthUserView(APIView):
     def get(self, request):
         try:
             user = request.user
-            data = {
-                "id": user.id,
-                "email": user.email,
-                "name": user.name,
-                "role": user.role.name,
-                "permissions": user.role.permissions,
-                "is_staff": user.is_staff,
-                "is_superuser": user.is_superuser,
-                "created_at": user.created_at,
-                "updated_at": user.updated_at,
-            }
+            data = SignInSerializer.get_user_data(user)
 
             return Response({
                 "success": True,
@@ -95,34 +122,52 @@ class SignInView(APIView):
             if check_password(password, user.password):
                 user.last_login = now()
                 user.save(update_fields=["last_login"])
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                refresh_token = str(refresh)
-                data = SignInSerializer(user).data
+                data = SignInSerializer.get_user_data(user)
                 res = Response({"message": "Signin successful.",
-                                "data": data}, status=status.HTTP_200_OK)
-                res.set_cookie(
-                    key="access_token",
-                    value=access_token,
-                    httponly=True,
-                    samesite="None",
-                    secure=True,
-                    max_age=3600 * 24,
-                )
-                res.set_cookie(
-                    key="refresh_token",
-                    value=refresh_token,
-                    httponly=True,
-                    samesite="None",
-                    secure=True,
-                    max_age=3600 * 24 * 7,
-                )
+                               "data": data}, status=status.HTTP_200_OK)
+                return set_tokens_in_cookies(user, res)
 
-                return res
             else:
                 return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"error": f"Error during sign-in: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GoogleLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get("credential")
+
+        if not token:
+            return Response({"message": "Missing token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token, Request(), audience=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
+            print("Token verified successfully:", idinfo)
+
+            email = idinfo.get("email")
+            if not email:
+                return Response({"message": "Google token invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                user = Users.objects.get(email=email)
+            except Users.DoesNotExist:
+                return Response({"message": "No user found with this email"}, status=status.HTTP_403_FORBIDDEN)
+
+            user.last_login = datetime.now()
+            user.save(update_fields=["last_login"])
+            data = SignInSerializer.get_user_data(user)
+
+            res = Response({
+                "message": "Google login successful.",
+                "data": data
+            }, status=status.HTTP_200_OK)
+            return set_tokens_in_cookies(user, res)
+
+        except Exception as e:
+            return Response({"message": "Google login failed", "error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SignOutView(APIView):
@@ -214,7 +259,6 @@ class ForgotPasswordView(APIView):
 
         token = str(uuid.uuid4())
         PasswordResetToken.objects.create(user=user, token=token)
-
         reset_link = f"{settings.FRONTEND_URL}/user/reset-password/{token}/"
 
         send_mail(
@@ -224,7 +268,6 @@ class ForgotPasswordView(APIView):
             [email],
             fail_silently=False,
         )
-
         return Response({"message": "Password reset link sent"}, status=status.HTTP_200_OK)
 
 
@@ -245,9 +288,6 @@ class ResetPasswordView(APIView):
             user = reset_token.user
             user.set_password(serializer.validated_data["password"])
             user.save()
-
             reset_token.delete()
-
             return Response({"message": "Password reset successful"}, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -3,6 +3,7 @@ from .views import (
     CheckAuthUserView,
     TokenRefresh,
     SignInView,
+    GoogleLoginView,
     SignOutView,
     RoleListView,
     RoleCreateView,
@@ -18,6 +19,7 @@ urlpatterns = [
     path("token/refresh-token/",
          TokenRefresh.as_view(), name="token-refresh"),
     path("users/sign-in/", SignInView.as_view(), name="users-sign-in"),
+    path("users/google-signin/", GoogleLoginView.as_view(), name="google-signin"),
     path("users/sign-out/", SignOutView.as_view(), name="users-sign-out"),
 
     # User Management Routes
